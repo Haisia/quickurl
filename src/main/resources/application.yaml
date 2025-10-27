@@ -21,8 +21,25 @@ spring:
       host: localhost
       port: 6379
       timeout: 2000ms
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000  # 60초
+      cache-null-values: false
+    cache-names:
+      - urlCache
 
 logging:
   level:
     dev.haisia.quickurl: DEBUG
     org.springframework.scheduling: INFO
+
+# Rate Limit 설정
+rate-limit:
+  enabled: true
+  request-limit: 10  # 기간당 최대 요청 수
+  refill-duration-seconds: 1  # 리필 기간 (초)
+  excluded-paths:
+    - /favicon.ico
+    - /actuator
+    - /error
