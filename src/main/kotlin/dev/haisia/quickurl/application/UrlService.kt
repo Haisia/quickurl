@@ -17,7 +17,7 @@ class UrlService(
   private val urlCacheRepository: UrlCacheRepository,
 ) : UrlCreator, UrlFinder {
 
-  override fun createShortUrl(originalUrl: String): String {
+  override fun createShortKey(originalUrl: String): String {
     val shortKey = createOrGetShortKey(originalUrl)
     urlCacheRepository.set(shortKey, originalUrl)
     return shortKey

@@ -2,7 +2,6 @@ package dev.haisia.quickurl.application
 
 import dev.haisia.quickurl.application.out.UrlCacheRepository
 import dev.haisia.quickurl.application.out.UrlRepository
-import dev.haisia.quickurl.domain.Url
 import dev.haisia.quickurl.domain.UrlEncoder
 import dev.haisia.quickurl.fixture.UrlFixture
 import io.mockk.Runs
@@ -49,7 +48,7 @@ class UrlServiceTest {
       every { urlEncoder.encode(1L) } returns expectedShortKey
       every { urlCacheRepository.set(expectedShortKey, originalUrl) } just Runs
 
-      val result = urlService.createShortUrl(originalUrl)
+      val result = urlService.createShortKey(originalUrl)
 
       assertEquals(expectedShortKey, result)
       verify { urlRepository.findByOriginalUrl(originalUrl) }
@@ -69,7 +68,7 @@ class UrlServiceTest {
       every { urlEncoder.encode(1L) } returns expectedShortKey
       every { urlCacheRepository.set(expectedShortKey, originalUrl) } just Runs
 
-      val result = urlService.createShortUrl(originalUrl)
+      val result = urlService.createShortKey(originalUrl)
 
       assertEquals(expectedShortKey, result)
       verify { urlRepository.findByOriginalUrl(originalUrl) }
@@ -92,7 +91,7 @@ class UrlServiceTest {
       every { urlRepository.findByOriginalUrl(originalUrl) } returns existingUrl
       every { urlCacheRepository.set(existingShortKey, originalUrl) } just Runs
 
-      val result = urlService.createShortUrl(originalUrl)
+      val result = urlService.createShortKey(originalUrl)
 
       assertEquals(existingShortKey, result)
       verify { urlRepository.findByOriginalUrl(originalUrl) }
