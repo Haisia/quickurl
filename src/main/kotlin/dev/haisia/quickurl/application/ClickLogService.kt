@@ -13,8 +13,9 @@ import org.springframework.transaction.annotation.Transactional
 class ClickLogService(
   private val clickLogRepository: ClickLogRepository
 ) : ClickLogger {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
+  companion object {
+    private val log = LoggerFactory.getLogger(ClickLogService::class.java)
+  }
 
   @Async
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -34,14 +35,14 @@ class ClickLogService(
       
       clickLogRepository.save(clickLog)
       
-      logger.debug(
+      log.debug(
         "Click log saved - shortKey: {}, ip: {}, userAgent: {}", 
         shortKey, 
         ipAddress, 
         userAgent?.take(50)
       )
     } catch (e: Exception) {
-      logger.error("Failed to save click log for shortKey: {}", shortKey, e)
+      log.error("Failed to save click log for shortKey: {}", shortKey, e)
     }
   }
 

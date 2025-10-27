@@ -35,18 +35,12 @@ class Url private constructor(
   fun generateShortKey(urlEncoder: UrlEncoder) {
     if (this.shortKey != null) return
 
-    requireNotNull(this.id) {
-      "Id must not be null. Please save url before generating short key."
-    }.let { id ->
-      this.shortKey = urlEncoder.encode(id)
-    }
+    val id = this.id ?: throw ShortKeyGenerationException()
+
+    this.shortKey = urlEncoder.encode(id)
   }
 
-  fun requireShortKey(): String {
-    return checkNotNull(this.shortKey) {
-      "Short key has not been generated yet. Call generateShortKey() first."
-    }
-  }
+  fun requireShortKey(): String = this.shortKey ?: throw ShortKeyNotGeneratedException()
 
   fun hasShortKey(): Boolean = shortKey != null
 

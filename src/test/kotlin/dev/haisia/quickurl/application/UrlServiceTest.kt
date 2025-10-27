@@ -143,7 +143,7 @@ class UrlServiceTest {
       every { urlCacheRepository.get(shortKey) } returns null
       every { urlRepository.findByShortKey(shortKey) } returns null
 
-      val exception = assertThrows(IllegalArgumentException::class.java) {
+      val exception = assertThrows(ShortUrlNotFoundException::class.java) {
         urlService.findOriginalUrl(shortKey)
       }
 
