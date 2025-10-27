@@ -15,8 +15,9 @@ import java.time.LocalDateTime
 class ClickLogCleanupScheduler(
   private val clickLogRepository: ClickLogRepository
 ) {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
+  companion object {
+    private val log = LoggerFactory.getLogger(ClickLogCleanupScheduler::class.java)
+  }
 
   /**
   * 매일 새벽 3시에 실행 (cron: 초 분 시 일 월 요일)
@@ -27,17 +28,17 @@ class ClickLogCleanupScheduler(
     val thresholdMonths = 6L
     val threshold = LocalDateTime.now().minusMonths(thresholdMonths)
 
-    logger.info("Starting click log cleanup - deleting logs before: {}", threshold)
+    log.info("Starting click log cleanup - deleting logs before: {}", threshold)
 
     try {
       val deletedCount = clickLogRepository.deleteByClickedAtBefore(threshold)
-      logger.info(
+      log.info(
         "Click log cleanup completed - deleted {} logs (older than {} months)",
         deletedCount,
         thresholdMonths
       )
     } catch (e: Exception) {
-      logger.error("Failed to cleanup old click logs", e)
+      log.error("Failed to cleanup old click logs", e)
     }
   }
 }

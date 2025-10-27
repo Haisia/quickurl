@@ -11,8 +11,9 @@ import java.io.IOException
 
 @Component
 class FaviconFilter : OncePerRequestFilter() {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
+  companion object {
+    private val log = LoggerFactory.getLogger(FaviconFilter::class.java)
+  }
 
   override fun doFilterInternal(
     request: HttpServletRequest,
@@ -43,13 +44,13 @@ class FaviconFilter : OncePerRequestFilter() {
         }
         response.outputStream.flush()
 
-        logger.debug("Served favicon.ico from static resources")
+        log.debug("Served favicon.ico from static resources")
       } else {
         response.status = HttpServletResponse.SC_NOT_FOUND
-        logger.debug("favicon.ico not found, returning 404")
+        log.debug("favicon.ico not found, returning 404")
       }
     } catch (e: IOException) {
-      logger.error("Error serving favicon.ico", e)
+      log.error("Error serving favicon.ico", e)
       response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
     }
   }

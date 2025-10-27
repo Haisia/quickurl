@@ -19,8 +19,10 @@ class UrlService(
   private val urlEncoder: UrlEncoder,
   private val urlCacheRepository: UrlCacheRepository,
 ) : UrlCreator, UrlFinder, UrlCleaner {
+  companion object {
+    private val log = LoggerFactory.getLogger(UrlService::class.java)
+  }
 
-  private val logger = LoggerFactory.getLogger(javaClass)
 
   override fun createShortKey(originalUrl: String): String {
     val shortKey = createOrGetShortKey(originalUrl)
@@ -55,11 +57,11 @@ class UrlService(
 
   override fun deleteUnusedUrls(thresholdMonths: Long): Int {
     val threshold = LocalDateTime.now().minusMonths(thresholdMonths)
-    logger.info("Deleting URLs not used since: {}", threshold)
+    log.info("Deleting URLs not used since: {}", threshold)
     
     val deletedCount = urlRepository.deleteByLastUsedAtBefore(threshold)
     
-    logger.info("Deleted {} unused URLs (threshold: {} months)", deletedCount, thresholdMonths)
+    log.info("Deleted {} unused URLs (threshold: {} months)", deletedCount, thresholdMonths)
     return deletedCount
   }
 }

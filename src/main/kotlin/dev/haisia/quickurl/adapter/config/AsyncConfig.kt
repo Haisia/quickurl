@@ -11,8 +11,9 @@ import java.util.concurrent.Executor
 @Configuration
 @EnableAsync
 class AsyncConfig : AsyncConfigurer {
-
-  private val logger = LoggerFactory.getLogger(javaClass)
+  companion object {
+    private val log = LoggerFactory.getLogger(AsyncConfig::class.java)
+  }
 
   override fun getAsyncExecutor(): Executor {
     val executor = ThreadPoolTaskExecutor()
@@ -28,7 +29,7 @@ class AsyncConfig : AsyncConfigurer {
 
   override fun getAsyncUncaughtExceptionHandler(): AsyncUncaughtExceptionHandler {
     return AsyncUncaughtExceptionHandler { ex, method, params ->
-      logger.error(
+      log.error(
         "Async method '{}' threw exception with params: {}",
         method.name,
         params.joinToString(", "),
