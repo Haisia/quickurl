@@ -28,8 +28,7 @@ class Base62Encoder: UrlEncoder {
       if (index == -1) {
         throw IllegalArgumentException("Invalid character in encoded string: $char")
       }
-
-      num = num * 62 + chars.indexOf(char)
+      num = num * 62 + index
     }
     return num
   }
