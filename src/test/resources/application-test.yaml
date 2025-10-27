@@ -20,3 +20,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# 테스트 환경에서는 Rate Limit 비활성화
+rate-limit:
+  enabled: false
