@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.persistence
+package dev.haisia.quickurl.adapter.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

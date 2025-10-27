@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.adapter.webapi
 
+import dev.haisia.quickurl.application.`in`.ClickLogger
 import dev.haisia.quickurl.application.`in`.UrlFinder
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.CacheControl
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit
 @Controller
 class UrlRedirectController(
   private val urlFinder: UrlFinder,
+  private val clickLogger: ClickLogger,
 ) {
 
   @GetMapping("/{shortKey}")
@@ -22,6 +24,14 @@ class UrlRedirectController(
     request: HttpServletRequest
   ): ResponseEntity<Unit> {
     val url = urlFinder.findOriginalUrl(shortKey)
+
+    /* 비동기로 로그 수집 */
+    clickLogger.logClickAsync(
+      shortKey = shortKey,
+      ipAddress = request.remoteAddr,
+      userAgent = request.getHeader("User-Agent"),
+      referer = request.getHeader("Referer")
+    )
 
     return ResponseEntity
       .status(HttpStatus.MOVED_PERMANENTLY)
