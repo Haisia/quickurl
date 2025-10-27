@@ -1,10 +1,8 @@
 package dev.haisia.quickurl.fixture
 
 import dev.haisia.quickurl.domain.Url
+import dev.haisia.quickurl.fixture.TestReflectionUtils.setFieldValue
 import java.time.LocalDateTime
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
-import kotlin.reflect.jvm.javaField
 
 class UrlFixture {
   companion object {
@@ -24,19 +22,6 @@ class UrlFixture {
       lastUsedAt?.let { url.setFieldValue("lastUsedAt", it) }
       
       return url
-    }
-    
-    private fun Url.setFieldValue(fieldName: String, value: Any?) {
-      this::class.memberProperties
-        .first { it.name == fieldName }
-        .apply {
-          isAccessible = true
-
-          javaField?.apply {
-            isAccessible = true
-            set(this@setFieldValue, value)
-          }
-        }
     }
   }
 }
