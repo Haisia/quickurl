@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -16,29 +17,25 @@ class UrlTest {
   @Test
   @DisplayName("팩토리 메서드로 Url 객체를 생성할 수 있다")
   fun testCreateUrlWithFactoryMethod() {
-    val shortKey = "abc123"
     val originalUrl = "https://example.com"
 
-    val url = Url.of(shortKey, originalUrl)
+    val url = Url.of(originalUrl)
 
     assertNotNull(url)
-    assertEquals(shortKey, url.shortKey)
     assertEquals(originalUrl, url.originalUrl)
   }
 
   @Test
   @DisplayName("생성 시 기본값이 올바르게 설정된다")
   fun testDefaultValues() {
-    val shortKey = "abc123"
     val originalUrl = "https://example.com"
     val beforeCreation = LocalDateTime.now().minusSeconds(1)
 
-    val url = Url.of(shortKey, originalUrl)
+    val url = Url.of(originalUrl)
     val afterCreation = LocalDateTime.now().plusSeconds(1)
 
     assertNotNull(url.lastUsedAt)
     assertNotNull(url.createdAt)
-    assertFalse(url.isDeleted)
     assertTrue(url.lastUsedAt.isAfter(beforeCreation) && url.lastUsedAt.isBefore(afterCreation))
     assertTrue(url.createdAt.isAfter(beforeCreation) && url.createdAt.isBefore(afterCreation))
   }
@@ -80,14 +77,12 @@ class UrlTest {
   }
 
   @Test
-  @DisplayName("shortKey와 originalUrl이 올바르게 저장된다")
+  @DisplayName("originalUrl이 올바르게 저장된다")
   fun testUrlFields() {
-    val shortKey = "test123"
     val originalUrl = "https://test.example.com/path?query=value"
 
-    val url = UrlFixture.createUrl(shortKey = shortKey, originalUrl = originalUrl)
+    val url = UrlFixture.createUrl(originalUrl = originalUrl)
 
-    assertEquals(shortKey, url.shortKey)
     assertEquals(originalUrl, url.originalUrl)
   }
 
@@ -102,12 +97,82 @@ class UrlTest {
   }
 
   @Test
-  @DisplayName("삭제 상태를 설정할 수 있다")
-  fun testIsDeleted() {
-    val deletedUrl = UrlFixture.createUrl(isDeleted = true)
-    val activeUrl = UrlFixture.createUrl(isDeleted = false)
+  @DisplayName("shortKey 생성 전에는 hasShortKey가 false를 반환한다")
+  fun testHasShortKeyBeforeGeneration() {
+    val url = Url.of("https://example.com")
 
-    assertTrue(deletedUrl.isDeleted)
-    assertFalse(activeUrl.isDeleted)
+    assertFalse(url.hasShortKey())
+  }
+
+  @Test
+  @DisplayName("shortKey가 설정되면 hasShortKey가 true를 반환한다")
+  fun testHasShortKeyAfterSetting() {
+    val url = UrlFixture.createUrl(shortKey = "abc123")
+
+    assertTrue(url.hasShortKey())
+  }
+
+  @Test
+  @DisplayName("ID가 있으면 UrlEncoder로 shortKey를 생성할 수 있다")
+  fun testGenerateShortKey() {
+    val url = UrlFixture.createUrl(id = 123L, originalUrl = "https://example.com")
+    val mockEncoder = object : UrlEncoder {
+      override fun encode(id: Long): String = "encoded_${id}"
+      override fun decode(url: String): Long = 0L
+    }
+
+    url.generateShortKey(mockEncoder)
+
+    assertTrue(url.hasShortKey())
+    assertEquals("encoded_123", url.shortKey)
+  }
+
+  @Test
+  @DisplayName("ID가 null이면 shortKey 생성 시 예외가 발생한다")
+  fun testGenerateShortKeyWithNullId() {
+    val url = Url.of("https://example.com")
+    val mockEncoder = object : UrlEncoder {
+      override fun encode(id: Long): String = "encoded_${id}"
+      override fun decode(url: String): Long = 0L
+    }
+
+    val exception = assertThrows(IllegalArgumentException::class.java) {
+      url.generateShortKey(mockEncoder)
+    }
+    
+    assertTrue(exception.message?.contains("Id must not be null") ?: false)
+  }
+
+  @Test
+  @DisplayName("shortKey가 있으면 requireShortKey가 값을 반환한다")
+  fun testRequireShortKeyWithValue() {
+    val url = UrlFixture.createUrl(shortKey = "abc123")
+
+    val shortKey = url.requireShortKey()
+
+    assertEquals("abc123", shortKey)
+  }
+
+  @Test
+  @DisplayName("shortKey가 없으면 requireShortKey가 예외를 발생시킨다")
+  fun testRequireShortKeyWithoutValue() {
+    val url = Url.of("https://example.com")
+
+    val exception = assertThrows(IllegalStateException::class.java) {
+      url.requireShortKey()
+    }
+    
+    assertTrue(exception.message?.contains("Short key has not been generated yet") ?: false)
+  }
+
+  @Test
+  @DisplayName("lastUsedAt 값을 업데이트할 수 있다")
+  fun testUpdateLastUsedAt() {
+    val customTime = LocalDateTime.of(2024, 6, 15, 10, 30)
+    val url = UrlFixture.createUrl()
+
+    url.lastUsedAt = customTime
+
+    assertEquals(customTime, url.lastUsedAt)
   }
 }

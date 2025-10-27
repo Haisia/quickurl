@@ -21,7 +21,7 @@ class UrlStatsTest {
     val country = "South Korea"
     val device = "Mobile"
     val browser = "Chrome"
-    val url = Url.of("abc123", "https://example.com")
+    val url = Url.of("https://example.com")
 
     val urlStat = UrlStat.of(ipAddress, country, device, browser, url)
 
@@ -36,7 +36,7 @@ class UrlStatsTest {
   @Test
   @DisplayName("생성 시 createdAt 기본값이 설정된다")
   fun testDefaultCreatedAt() {
-    val url = Url.of("abc123", "https://example.com")
+    val url = Url.of("https://example.com")
     val beforeCreation = LocalDateTime.now().minusSeconds(1)
 
     val urlStat = UrlStat.of("192.168.0.1", "Korea", "Desktop", "Firefox", url)
@@ -49,13 +49,12 @@ class UrlStatsTest {
   @Test
   @DisplayName("Url과의 연관관계가 올바르게 설정된다")
   fun testUrlRelationship() {
-    val url = Url.of("test123", "https://test.example.com")
+    val url = Url.of("https://test.example.com")
 
     val urlStats = UrlStatsFixture.createUrlStats(url = url)
 
     assertNotNull(urlStats.url)
     assertEquals(url, urlStats.url)
-    assertEquals("test123", urlStats.url.shortKey)
     assertEquals("https://test.example.com", urlStats.url.originalUrl)
   }
 
@@ -80,7 +79,6 @@ class UrlStatsTest {
       url = url
     )
 
-    // when & then
     assertEquals(urlStats1, urlStats2)
   }
 

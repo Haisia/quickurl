@@ -17,8 +17,8 @@ class Url private constructor(
   @Column(name = "id")
   val id: Long? = null,
 
-  @Column(name = "short_key", nullable = false, unique = true)
-  val shortKey: String,
+  @Column(name = "short_key", unique = true)
+  var shortKey: String? = null,
 
   @Column(name = "original_url", nullable = false, unique = true)
   val originalUrl: String,
@@ -28,20 +28,28 @@ class Url private constructor(
 
   @Column(name = "created_at", nullable = false)
   val createdAt: LocalDateTime = LocalDateTime.now(),
-
-  @Column(name = "is_deleted", nullable = false)
-  val isDeleted: Boolean = false,
-  ) {
+) {
   companion object {
-    fun of(
-      shortKey: String,
-      originalUrl: String
-    ): Url =
-      Url(
-        shortKey = shortKey,
-        originalUrl = originalUrl
-      )
+    fun of(originalUrl: String): Url = Url(originalUrl = originalUrl)
   }
+
+  fun generateShortKey(urlEncoder: UrlEncoder) {
+    if (this.shortKey != null) return
+
+    requireNotNull(this.id) {
+      "Id must not be null. Please save url before generating short key."
+    }.let { id ->
+      this.shortKey = urlEncoder.encode(id)
+    }
+  }
+
+  fun requireShortKey(): String {
+    return checkNotNull(this.shortKey) {
+      "Short key has not been generated yet. Call generateShortKey() first."
+    }
+  }
+
+  fun hasShortKey(): Boolean = shortKey != null
 
   final override fun equals(other: Any?): Boolean {
     if (this === other) return true

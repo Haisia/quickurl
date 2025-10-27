@@ -8,17 +8,16 @@ class UrlFixture {
   companion object {
     fun createUrl(
       id: Long? = null,
-      shortKey: String = "abc123",
+      shortKey: String? = null,
       originalUrl: String = "https://example.com",
       lastUsedAt: LocalDateTime? = null,
       createdAt: LocalDateTime? = null,
-      isDeleted: Boolean? = null,
     ): Url {
-      val url = Url.of(shortKey = shortKey, originalUrl = originalUrl)
+      val url = Url.of(originalUrl = originalUrl)
       
       id?.let { url.setFieldValue("id", it) }
+      shortKey?.let { url.setFieldValue("shortKey", it) }
       createdAt?.let { url.setFieldValue("createdAt", it) }
-      isDeleted?.let { url.setFieldValue("isDeleted", it) }
       lastUsedAt?.let { url.setFieldValue("lastUsedAt", it) }
       
       return url
