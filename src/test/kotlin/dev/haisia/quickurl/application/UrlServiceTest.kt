@@ -4,11 +4,7 @@ import dev.haisia.quickurl.application.out.UrlCacheRepository
 import dev.haisia.quickurl.application.out.UrlRepository
 import dev.haisia.quickurl.domain.UrlEncoder
 import dev.haisia.quickurl.fixture.UrlFixture
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach

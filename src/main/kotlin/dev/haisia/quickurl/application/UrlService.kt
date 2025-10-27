@@ -3,9 +3,9 @@ package dev.haisia.quickurl.application
 import dev.haisia.quickurl.application.`in`.UrlCreator
 import dev.haisia.quickurl.application.`in`.UrlFinder
 import dev.haisia.quickurl.application.out.UrlCacheRepository
-import dev.haisia.quickurl.domain.UrlEncoder
 import dev.haisia.quickurl.application.out.UrlRepository
 import dev.haisia.quickurl.domain.Url
+import dev.haisia.quickurl.domain.UrlEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -43,6 +43,7 @@ class UrlService(
 
     val url = urlRepository.findByShortKey(shortKey)
       ?: throw IllegalArgumentException("URL not found for key: $shortKey")
+    url.click()
 
     urlCacheRepository.set(shortKey, url.originalUrl)
 
