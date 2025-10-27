@@ -1,14 +1,170 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8">
-    <title>Hello World with Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>짧은 URL 생성기</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .input-group {
+        margin: 20px 0;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .result.show {
+        display: block;
+      }
+
+      .short-url {
+        font-size: 18px;
+        font-weight: bold;
+        word-break: break-all;
+        margin: 10px 0;
+      }
+
+      .error {
+        color: #dc3545;
+        margin-top: 10px;
+      }
+
+      .copy-btn {
+        background-color: #28a745;
+        margin-top: 10px;
+      }
+
+      .copy-btn:hover {
+        background-color: #218838;
+      }
+    </style>
   </head>
   <body>
+    <h1>짧은 URL 생성기</h1>
 
-    <h1 th:text="'Hello World!'">기본 텍스트</h1>
+    <div class="input-group">
+      <label for="originalUrl">원본 URL을 입력하세요:</label>
+      <input type="text" id="originalUrl" placeholder="https://example.com/very/long/url"/>
+    </div>
 
-    <p>이것은 타임리프 기본 페이지입니다.</p>
+    <button id="createBtn" onclick="createShortUrl()">짧은 URL 생성</button>
 
+    <div id="result" class="result">
+      <h3>생성된 짧은 URL:</h3>
+      <div id="shortUrl" class="short-url"></div>
+      <button class="copy-btn" onclick="copyToClipboard()">복사하기</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <script>
+      async function createShortUrl() {
+        const originalUrl = document.getElementById('originalUrl').value.trim();
+        const errorDiv = document.getElementById('error');
+        const resultDiv = document.getElementById('result');
+        const createBtn = document.getElementById('createBtn');
+
+        errorDiv.textContent = '';
+        resultDiv.classList.remove('show');
+
+        if (!originalUrl) {
+          errorDiv.textContent = 'URL을 입력해주세요.';
+          return;
+        }
+
+        createBtn.disabled = true;
+        createBtn.textContent = '생성 중...';
+
+        try {
+          const response = await fetch('/api/v1/shorten', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              originalUrl: originalUrl
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('URL 생성에 실패했습니다.');
+          }
+
+          const data = await response.json();
+          
+          const shortKey = data.data.short_key;
+          const shortUrl = `${window.location.origin}/${shortKey}`;
+
+          document.getElementById('shortUrl').textContent = shortUrl;
+          resultDiv.classList.add('show');
+
+        } catch (error) {
+          errorDiv.textContent = error.message || '오류가 발생했습니다.';
+        } finally {
+          createBtn.disabled = false;
+          createBtn.textContent = '짧은 URL 생성';
+        }
+      }
+
+      function copyToClipboard() {
+        const shortUrl = document.getElementById('shortUrl').textContent;
+        navigator.clipboard.writeText(shortUrl).then(() => {
+          alert('클립보드에 복사되었습니다!');
+        }).catch(() => {
+          alert('복사에 실패했습니다.');
+        });
+      }
+
+      document.getElementById('originalUrl').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+          createShortUrl();
+        }
+      });
+    </script>
   </body>
 </html>

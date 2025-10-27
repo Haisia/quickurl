@@ -5,17 +5,18 @@ import org.springframework.stereotype.Component
 
 @Component
 class Base62Encoder: UrlEncoder {
-  private val chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  private val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  private val base = chars.length
 
   override fun encode(id: Long): String {
-    if (id == 0L) return "0"
+    if (id == 0L) return chars[0].toString()
 
     var num = id
     val sb = StringBuilder()
 
     while (num > 0) {
-      sb.append(chars[(num % 62).toInt()])
-      num /= 62
+      sb.append(chars[(num % base).toInt()])
+      num /= base
     }
 
     return sb.reverse().toString()
@@ -28,7 +29,7 @@ class Base62Encoder: UrlEncoder {
       if (index == -1) {
         throw IllegalArgumentException("Invalid character in encoded string: $char")
       }
-      num = num * 62 + index
+      num = num * base + index
     }
     return num
   }

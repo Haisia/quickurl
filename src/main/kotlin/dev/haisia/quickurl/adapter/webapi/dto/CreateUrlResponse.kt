@@ -2,7 +2,7 @@ package dev.haisia.quickurl.adapter.webapi.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-class CreateUrlResponse(
+data class CreateUrlResponse(
   @JsonProperty("short_key")
-  shortKey: String
+  val shortKey: String
 )
