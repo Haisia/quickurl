@@ -1,11 +1,6 @@
 package dev.haisia.quickurl.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
 
@@ -31,6 +26,10 @@ class Url private constructor(
 ) {
   companion object {
     fun of(originalUrl: String): Url = Url(originalUrl = originalUrl)
+  }
+
+  fun click() {
+    this.lastUsedAt = LocalDateTime.now()
   }
 
   fun generateShortKey(urlEncoder: UrlEncoder) {
