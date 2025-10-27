@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 @Table(name = "url_stats")
 @Entity
-class UrlStats private constructor(
+class UrlStat private constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -46,8 +46,8 @@ class UrlStats private constructor(
       device: String,
       browser: String,
       url: Url
-    ): UrlStats =
-      UrlStats(
+    ): UrlStat =
+      UrlStat(
         ipAddress = ipAddress,
         country = country,
         device = device,
@@ -64,7 +64,7 @@ class UrlStats private constructor(
     val thisEffectiveClass =
       if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
     if (thisEffectiveClass != oEffectiveClass) return false
-    other as UrlStats
+    other as UrlStat
 
     return id != null && id == other.id
   }

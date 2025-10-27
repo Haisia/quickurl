@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.fixture
 
 import dev.haisia.quickurl.domain.Url
-import dev.haisia.quickurl.domain.UrlStats
+import dev.haisia.quickurl.domain.UrlStat
 import dev.haisia.quickurl.fixture.TestReflectionUtils.setFieldValue
 import java.time.LocalDateTime
 
@@ -15,8 +15,8 @@ class UrlStatsFixture {
       browser: String = "Chrome",
       url: Url = UrlFixture.createUrl(),
       createdAt: LocalDateTime? = null,
-    ): UrlStats {
-      val urlStats = UrlStats.of(
+    ): UrlStat {
+      val urlStat = UrlStat.of(
         ipAddress = ipAddress,
         country = country,
         device = device,
@@ -24,10 +24,10 @@ class UrlStatsFixture {
         url = url
       )
       
-      id?.let { urlStats.setFieldValue("id", it) }
-      createdAt?.let { urlStats.setFieldValue("createdAt", it) }
+      id?.let { urlStat.setFieldValue("id", it) }
+      createdAt?.let { urlStat.setFieldValue("createdAt", it) }
       
-      return urlStats
+      return urlStat
     }
   }
 }

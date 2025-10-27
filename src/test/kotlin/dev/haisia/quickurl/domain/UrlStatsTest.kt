@@ -23,14 +23,14 @@ class UrlStatsTest {
     val browser = "Chrome"
     val url = Url.of("abc123", "https://example.com")
 
-    val urlStats = UrlStats.of(ipAddress, country, device, browser, url)
+    val urlStat = UrlStat.of(ipAddress, country, device, browser, url)
 
-    assertNotNull(urlStats)
-    assertEquals(ipAddress, urlStats.ipAddress)
-    assertEquals(country, urlStats.country)
-    assertEquals(device, urlStats.device)
-    assertEquals(browser, urlStats.browser)
-    assertSame(url, urlStats.url)
+    assertNotNull(urlStat)
+    assertEquals(ipAddress, urlStat.ipAddress)
+    assertEquals(country, urlStat.country)
+    assertEquals(device, urlStat.device)
+    assertEquals(browser, urlStat.browser)
+    assertSame(url, urlStat.url)
   }
 
   @Test
@@ -39,11 +39,11 @@ class UrlStatsTest {
     val url = Url.of("abc123", "https://example.com")
     val beforeCreation = LocalDateTime.now().minusSeconds(1)
 
-    val urlStats = UrlStats.of("192.168.0.1", "Korea", "Desktop", "Firefox", url)
+    val urlStat = UrlStat.of("192.168.0.1", "Korea", "Desktop", "Firefox", url)
     val afterCreation = LocalDateTime.now().plusSeconds(1)
 
-    assertNotNull(urlStats.createdAt)
-    assertTrue(urlStats.createdAt.isAfter(beforeCreation) && urlStats.createdAt.isBefore(afterCreation))
+    assertNotNull(urlStat.createdAt)
+    assertTrue(urlStat.createdAt.isAfter(beforeCreation) && urlStat.createdAt.isBefore(afterCreation))
   }
 
   @Test
