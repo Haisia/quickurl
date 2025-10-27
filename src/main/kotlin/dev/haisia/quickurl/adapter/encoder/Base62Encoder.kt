@@ -24,6 +24,11 @@ class Base62Encoder: UrlEncoder {
   override fun decode(url: String): Long {
     var num = 0L
     for (char in url) {
+      val index = chars.indexOf(char)
+      if (index == -1) {
+        throw IllegalArgumentException("Invalid character in encoded string: $char")
+      }
+
       num = num * 62 + chars.indexOf(char)
     }
     return num

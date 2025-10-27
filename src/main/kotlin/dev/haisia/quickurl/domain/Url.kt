@@ -34,6 +34,8 @@ class Url private constructor(
   }
 
   fun generateShortKey(urlEncoder: UrlEncoder) {
+    if (this.shortKey != null) return
+
     requireNotNull(this.id) {
       "Id must not be null. Please save url before generating short key."
     }.let { id ->

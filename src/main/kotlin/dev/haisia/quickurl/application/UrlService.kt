@@ -18,6 +18,12 @@ class UrlService(
 ) : UrlCreator, UrlFinder {
 
   override fun createShortUrl(originalUrl: String): String {
+    val shortKey = createOrGetShortKey(originalUrl)
+    urlCacheRepository.set(shortKey, originalUrl)
+    return shortKey
+  }
+
+  private fun createOrGetShortKey(originalUrl: String): String {
     val url = urlRepository.findByOriginalUrl(originalUrl)
       ?: urlRepository.save(Url.of(originalUrl))
 
@@ -25,11 +31,7 @@ class UrlService(
       url.generateShortKey(urlEncoder)
     }
 
-    val shortKey = url.requireShortKey()
-    
-    urlCacheRepository.set(shortKey, originalUrl)
-
-    return shortKey
+    return url.requireShortKey()
   }
 
   @Transactional(readOnly = true)
