@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class ApplicationExceptionHandler {
   companion object {
-    private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val log = LoggerFactory.getLogger(ApplicationExceptionHandler::class.java)
   }
 
   @ExceptionHandler(ApplicationException::class)

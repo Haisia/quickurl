@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class AdapterExceptionHandler {
   companion object {
-    private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val log = LoggerFactory.getLogger(AdapterExceptionHandler::class.java)
   }
 
   @ExceptionHandler(AdapterException::class)
-  fun handleApplicationException(e: AdapterException): ResponseEntity<ApiResponse<ApiErrorData>> {
+  fun handleAdapterException(e: AdapterException): ResponseEntity<ApiResponse<ApiErrorData>> {
     log.warn("Adapter exception occurred: {}", e.message)
 
     return ResponseEntity

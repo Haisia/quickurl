@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class DomainExceptionHandler {
   companion object {
-    private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val log = LoggerFactory.getLogger(DomainExceptionHandler::class.java)
   }
 
   @ExceptionHandler(DomainException::class)
