@@ -27,7 +27,7 @@ class Base62Encoder: UrlEncoder {
     for (char in url) {
       val index = chars.indexOf(char)
       if (index == -1) {
-        throw IllegalArgumentException("Invalid character in encoded string: $char")
+        throw InvalidShortKeyFormatException("Invalid character in encoded string: $char")
       }
       num = num * base + index
     }

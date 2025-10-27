@@ -131,7 +131,7 @@ class UrlTest {
       override fun decode(url: String): Long = 0L
     }
 
-    val exception = assertThrows(IllegalArgumentException::class.java) {
+    val exception = assertThrows(ShortKeyGenerationException::class.java) {
       url.generateShortKey(mockEncoder)
     }
     
@@ -153,7 +153,7 @@ class UrlTest {
   fun testRequireShortKeyWithoutValue() {
     val url = Url.of("https://example.com")
 
-    val exception = assertThrows(IllegalStateException::class.java) {
+    val exception = assertThrows(ShortKeyNotGeneratedException::class.java) {
       url.requireShortKey()
     }
     

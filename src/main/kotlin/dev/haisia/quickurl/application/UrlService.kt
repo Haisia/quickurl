@@ -45,8 +45,7 @@ class UrlService(
       return cachedUrl
     }
 
-    val url = urlRepository.findByShortKey(shortKey)
-      ?: throw IllegalArgumentException("URL not found for key: $shortKey")
+    val url = urlRepository.findByShortKey(shortKey) ?: throw ShortUrlNotFoundException("URL not found for key: $shortKey")
     url.click()
 
     urlCacheRepository.set(shortKey, url.originalUrl)
