@@ -16,18 +16,20 @@ interface UrlRepository: JpaRepository<Url, Long> {
 
   @Query(
     """
-      SELECT 
-        u.id as id,
-        u.shortKey as shortKey,
-        u.originalUrl as originalUrl,
-        count(u.shortKey) as clickCount,
-        u.createdBy as createdBy,
-        u.lastUsedAt as lastUsedAt,
-        u.createdAt as createdAt
-      from Url u
-      join ClickLog cl on cl.shortKey = u.shortKey
-      where u.createdBy = :createdBy
-      group by u.shortKey
+    select new dev.haisia.quickurl.application.url.dto.UrlWithClickCountDto(
+      u.id, 
+      u.shortKey,
+      u.originalUrl, 
+      COALESCE(COUNT(cl.id), 0L), 
+      u.createdBy,
+      u.lastUsedAt, 
+      u.createdAt
+    )
+    from Url u 
+    left join ClickLog cl ON cl.shortKey = u.shortKey
+    where u.createdBy = :createdBy
+    group by u.id, u.shortKey, u.originalUrl, u.createdBy, u.lastUsedAt, u.createdAt
+    order by u.createdAt DESC
     """
   )
   fun findByCreatedByWithClickCount(createdBy: String, pageable: Pageable): Page<UrlWithClickCountDto>

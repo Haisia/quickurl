@@ -8,7 +8,7 @@ data class ApiPageableData<T>(
   val totalPages: Int,
 
   @JsonProperty("total_count")
-  val totalCount: Int,
+  val totalCount: Long,
 
   @JsonProperty("items")
   val items: List<T>
@@ -17,7 +17,7 @@ data class ApiPageableData<T>(
     fun <T> from(page: Page<T>): ApiPageableData<T> {
       return ApiPageableData(
         totalPages = page.totalPages,
-        totalCount = page.totalElements.toInt(),
+        totalCount = page.totalElements,
         items = page.content)
     }
   }
