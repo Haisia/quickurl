@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.application
 
 import dev.haisia.quickurl.application.out.ClickLogRepository
-import dev.haisia.quickurl.domain.ClickLog
+import dev.haisia.quickurl.domain.url.ClickLog
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot

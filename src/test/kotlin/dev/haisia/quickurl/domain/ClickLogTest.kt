@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.domain
 
+import dev.haisia.quickurl.domain.url.ClickLog
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.DisplayName

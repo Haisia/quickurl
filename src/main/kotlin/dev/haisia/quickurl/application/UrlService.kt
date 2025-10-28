@@ -5,8 +5,8 @@ import dev.haisia.quickurl.application.`in`.UrlCreator
 import dev.haisia.quickurl.application.`in`.UrlFinder
 import dev.haisia.quickurl.application.out.UrlCacheRepository
 import dev.haisia.quickurl.application.out.UrlRepository
-import dev.haisia.quickurl.domain.Url
-import dev.haisia.quickurl.domain.UrlEncoder
+import dev.haisia.quickurl.domain.url.Url
+import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

@@ -1,5 +1,7 @@
 package dev.haisia.quickurl.domain
 
+import dev.haisia.quickurl.domain.url.Url
+import dev.haisia.quickurl.domain.url.UrlEncoder
 import dev.haisia.quickurl.fixture.UrlFixture
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName

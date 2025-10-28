@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.application.out
 
-import dev.haisia.quickurl.domain.ClickLog
+import dev.haisia.quickurl.domain.url.ClickLog
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 

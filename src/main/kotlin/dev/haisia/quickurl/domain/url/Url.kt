@@ -1,5 +1,7 @@
-package dev.haisia.quickurl.domain
+package dev.haisia.quickurl.domain.url
 
+import dev.haisia.quickurl.domain.ShortKeyGenerationException
+import dev.haisia.quickurl.domain.ShortKeyNotGeneratedException
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime

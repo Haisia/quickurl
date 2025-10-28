@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.domain
+package dev.haisia.quickurl.domain.url
 
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy

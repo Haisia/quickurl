@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.application.out
 
-import dev.haisia.quickurl.domain.Url
+import dev.haisia.quickurl.domain.url.Url
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 
