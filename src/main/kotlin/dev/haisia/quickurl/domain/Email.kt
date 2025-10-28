@@ -1,8 +1,5 @@
 package dev.haisia.quickurl.domain
 
-import kotlin.text.matches
-import kotlin.text.toRegex
-
 data class Email(val value: String) {
 
   companion object {

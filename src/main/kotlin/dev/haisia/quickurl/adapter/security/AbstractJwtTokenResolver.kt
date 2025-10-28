@@ -5,14 +5,10 @@ import dev.haisia.quickurl.domain.Email
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.SignatureException
-import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
-import java.util.UUID
+import java.util.*
 import javax.crypto.SecretKey
 
 abstract class AbstractJwtTokenResolver : TokenResolver {

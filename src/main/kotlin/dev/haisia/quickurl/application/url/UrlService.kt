@@ -1,12 +1,11 @@
 package dev.haisia.quickurl.application.url
 
-import dev.haisia.quickurl.application.`in`.UrlCreator
-import dev.haisia.quickurl.application.out.UrlCacheRepository
 import dev.haisia.quickurl.application.shared.out.AuthenticationContext
 import dev.haisia.quickurl.application.url.dto.UrlWithClickCountDto
 import dev.haisia.quickurl.application.url.`in`.UrlCleaner
+import dev.haisia.quickurl.application.url.`in`.UrlCreator
 import dev.haisia.quickurl.application.url.`in`.UrlFinder
-import dev.haisia.quickurl.application.url.out.ClickStatsRepository
+import dev.haisia.quickurl.application.url.out.UrlCacheRepository
 import dev.haisia.quickurl.application.url.out.UrlRepository
 import dev.haisia.quickurl.application.user.UserNotFoundException
 import dev.haisia.quickurl.application.user.out.UserRepository
@@ -15,7 +14,6 @@ import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime

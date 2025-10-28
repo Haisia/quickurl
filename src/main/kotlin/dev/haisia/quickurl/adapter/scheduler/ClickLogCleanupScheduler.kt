@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.adapter.scheduler
 
-import dev.haisia.quickurl.application.out.ClickLogRepository
+import dev.haisia.quickurl.application.url.out.ClickLogRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

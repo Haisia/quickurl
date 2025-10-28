@@ -2,7 +2,7 @@ package dev.haisia.quickurl.adapter.encoder
 
 import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.springframework.stereotype.Component
-import java.util.UUID
+import java.util.*
 
 @Component
 class Base62Encoder: UrlEncoder {

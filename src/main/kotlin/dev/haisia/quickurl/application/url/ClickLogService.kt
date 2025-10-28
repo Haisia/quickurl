@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.application.url
 
-import dev.haisia.quickurl.application.out.ClickLogRepository
 import dev.haisia.quickurl.application.url.`in`.ClickLogger
+import dev.haisia.quickurl.application.url.out.ClickLogRepository
 import dev.haisia.quickurl.application.url.out.ClickStatsRepository
 import dev.haisia.quickurl.domain.url.ClickLog
 import org.slf4j.LoggerFactory

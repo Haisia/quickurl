@@ -3,7 +3,7 @@ package dev.haisia.quickurl.adapter.security
 import dev.haisia.quickurl.domain.Email
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.util.UUID
+import java.util.*
 
 data class CustomUserDetails(
   val userId: UUID,

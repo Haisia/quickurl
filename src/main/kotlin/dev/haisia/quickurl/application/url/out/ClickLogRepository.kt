@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application.out
+package dev.haisia.quickurl.application.url.out
 
 import dev.haisia.quickurl.domain.url.ClickLog
 import org.springframework.data.jpa.repository.JpaRepository
