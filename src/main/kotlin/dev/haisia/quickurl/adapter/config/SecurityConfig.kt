@@ -34,12 +34,19 @@ class SecurityConfig(
             "/images/**",
             "/favicon.ico"
           ).permitAll()
-          // 공개 API 허용
+          // 공개 페이지 허용
           .requestMatchers(
             "/",
+            "/register",
+            "/login"
+          ).permitAll()
+          // 공개 API 허용
+          .requestMatchers(
             "/api/v1/auth/register",
             "/api/v1/auth/login",
-            "/api/v1/auth/accesstoken",
+            "/api/v1/auth/logout",
+            "/api/v1/auth/me",
+            "/api/v1/auth/token/refresh",
             "/api/v1/shorten",
             "/{shortUrl}"
           ).permitAll()

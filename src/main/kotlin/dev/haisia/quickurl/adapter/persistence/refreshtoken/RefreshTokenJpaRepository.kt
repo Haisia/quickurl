@@ -35,4 +35,14 @@ interface RefreshTokenJpaRepository : JpaRepository<RefreshToken, Long> {
     where rt.token = :token
     """)
   fun increaseIssueCount(token: String): Int
+
+  @Modifying
+  @Query(
+    """
+    update RefreshToken rt 
+    set rt.enabled = false 
+    where rt.token = :token
+    """
+  )
+  fun disableRefreshToken(token: String): Int
 }

@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.adapter.exceptionhandler
 
-import dev.haisia.quickurl.adapter.webapi.ApiErrorData
-import dev.haisia.quickurl.adapter.webapi.ApiResponse
+import dev.haisia.quickurl.adapter.web.api.ApiErrorData
+import dev.haisia.quickurl.adapter.web.api.ApiResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

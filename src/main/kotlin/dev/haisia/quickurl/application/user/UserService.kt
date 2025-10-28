@@ -47,15 +47,18 @@ class UserService(
   }
 
   override fun accessTokenRefresh(refreshToken: String): String {
-    if(!tokenResolver.validateToken(refreshToken)) {
-      throw InvalidTokenAdapterException()
-    }
+    tokenResolver.validateAsRefreshToken(refreshToken)
 
     val userId = tokenResolver.getUserIdFromToken(refreshToken)
     val foundUser = userRepository.findById(userId).orElseThrow()
 
     refreshTokenRepository.increaseIssueCount(refreshToken)
+
     return tokenProvider.generateAccessToken(foundUser.getNonNullId(), foundUser.email)
+  }
+
+  override fun expireRefreshToken(refreshToken: String) {
+    refreshTokenRepository.disableRefreshToken(refreshToken)
   }
 
 }

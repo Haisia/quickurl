@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.webapi
+package dev.haisia.quickurl.adapter.web.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

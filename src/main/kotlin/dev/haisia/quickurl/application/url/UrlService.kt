@@ -4,7 +4,8 @@ import dev.haisia.quickurl.application.`in`.UrlCleaner
 import dev.haisia.quickurl.application.`in`.UrlCreator
 import dev.haisia.quickurl.application.`in`.UrlFinder
 import dev.haisia.quickurl.application.out.UrlCacheRepository
-import dev.haisia.quickurl.application.out.UrlRepository
+import dev.haisia.quickurl.application.shared.out.AuthenticationContext
+import dev.haisia.quickurl.application.url.out.UrlRepository
 import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.slf4j.LoggerFactory
@@ -18,11 +19,11 @@ class UrlService(
   private val urlRepository: UrlRepository,
   private val urlEncoder: UrlEncoder,
   private val urlCacheRepository: UrlCacheRepository,
+  private val authenticationContext: AuthenticationContext,
 ) : UrlCreator, UrlFinder, UrlCleaner {
   companion object {
     private val log = LoggerFactory.getLogger(UrlService::class.java)
   }
-
 
   override fun createShortKey(originalUrl: String): String {
     val shortKey = createOrGetShortKey(originalUrl)
@@ -31,8 +32,10 @@ class UrlService(
   }
 
   private fun createOrGetShortKey(originalUrl: String): String {
-    val url = urlRepository.findByOriginalUrl(originalUrl)
-      ?: urlRepository.save(Url.of(originalUrl))
+    val userIdOrNull = authenticationContext.getCurrentUserIdAllowNull()
+
+    val url = urlRepository.findByOriginalUrlAndCreatedBy(originalUrl, userIdOrNull?.toString() ?: "anonymous")
+      ?: urlRepository.save(Url.of(originalUrl = originalUrl, createdBy = userIdOrNull))
 
     if (!url.hasShortKey()) {
       url.generateShortKey(urlEncoder)

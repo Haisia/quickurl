@@ -36,20 +36,34 @@ abstract class AbstractJwtTokenResolver : TokenResolver {
     return Email(getClaims(token).get(EMAIL_CLAIM, String::class.java))
   }
 
+  override fun validateAsAccessToken(token: String): Boolean {
+    validateToken(token)
+
+    if(getTokenType(token) != JwtTokenProvider.ACCESS_TYPE) {
+      throw InvalidTokenException("Access token is not valid")
+    }
+
+    return true
+  }
+
+  override fun validateAsRefreshToken(token: String): Boolean {
+    validateToken(token)
+
+    if(getTokenType(token) != JwtTokenProvider.REFRESH_TYPE) {
+      throw InvalidTokenException("Refresh token is not valid")
+    }
+
+    return true
+  }
+
   override fun validateToken(token: String): Boolean {
     return try {
       getClaims(token)
       true
     } catch (_: ExpiredJwtException) {
-      false
-    } catch (_: UnsupportedJwtException) {
-      false
-    } catch (_: MalformedJwtException) {
-      false
-    } catch (_: SignatureException) {
-      false
-    } catch (_: IllegalArgumentException) {
-      false
+      throw TokenExpiredException()
+    } catch (_: RuntimeException) {
+      throw InvalidTokenException()
     }
   }
 
