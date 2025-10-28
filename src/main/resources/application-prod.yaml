@@ -1,0 +1,12 @@
+app:
+  cookie:
+    secure: true  # HTTPS만 허용
+    domain: quickurl.haisia.dev  # 서브도메인 공유
+    same-site: Strict
+    access-token-max-age: 3600      # 1시간
+    refresh-token-max-age: 604800   # 7일
+
+logging:
+  level:
+    dev.haisia.quickurl: INFO
+    org.springframework.scheduling: INFO

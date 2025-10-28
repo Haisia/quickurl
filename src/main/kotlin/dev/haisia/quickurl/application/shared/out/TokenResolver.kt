@@ -12,6 +12,10 @@ interface TokenResolver {
 
   fun validateToken(token: String): Boolean
 
+  fun validateAsAccessToken(token: String): Boolean
+
+  fun validateAsRefreshToken(token: String): Boolean
+
   fun getTokenType(token: String): String
 
   fun getExpirationDate(token: String): Date

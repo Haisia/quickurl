@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.security
 
 import dev.haisia.quickurl.adapter.AdapterException
+import dev.haisia.quickurl.application.shared.ApplicationException
 import org.springframework.http.HttpStatus
 
 abstract class SecurityAdapterException : AdapterException {
@@ -8,6 +9,10 @@ abstract class SecurityAdapterException : AdapterException {
   constructor(message: String, httpStatus: HttpStatus, cause: Throwable) : super(message, httpStatus, cause)
 }
 
-class UnauthorizedAdapterException(
-  message: String = "Access is denied."
-) : SecurityAdapterException(message, HttpStatus.FORBIDDEN)
+class InvalidTokenException(
+  message: String = "Invalid authentication token."
+) : SecurityAdapterException(message, HttpStatus.UNAUTHORIZED)
+
+class TokenExpiredException(
+  message: String = "Authentication token has expired."
+) : SecurityAdapterException(message, HttpStatus.UNAUTHORIZED)

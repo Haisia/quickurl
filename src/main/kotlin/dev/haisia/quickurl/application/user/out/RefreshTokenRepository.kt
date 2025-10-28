@@ -17,4 +17,5 @@ interface RefreshTokenRepository {
 
   fun increaseIssueCount(refreshToken: String): Boolean
 
+  fun disableRefreshToken(token: String): Int
 }

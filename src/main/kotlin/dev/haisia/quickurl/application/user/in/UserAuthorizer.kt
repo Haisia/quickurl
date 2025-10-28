@@ -10,4 +10,6 @@ interface UserAuthorizer {
   fun loginUser(email: Email, password: Password): Pair<String, String>
   /* refresh 토큰을 통해 엑세스 토큰을 재발급합니다. */
   fun accessTokenRefresh(refreshToken: String): String
+
+  fun expireRefreshToken(refreshToken: String)
 }

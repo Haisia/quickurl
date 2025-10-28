@@ -20,6 +20,6 @@ class UrlApiController(
     @RequestBody request: CreateUrlRequest
   ): ResponseEntity<ApiResponse<CreateUrlResponse>> {
     val shortKey = urlCreator.createShortKey(request.originalUrl)
-    return ApiResponse.Companion.created(CreateUrlResponse(shortKey))
+    return ApiResponse.created(CreateUrlResponse(shortKey))
   }
 }

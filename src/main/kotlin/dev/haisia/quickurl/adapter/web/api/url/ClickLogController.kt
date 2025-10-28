@@ -19,7 +19,7 @@ class ClickLogController(
   fun getClickStats(@PathVariable shortKey: String): ResponseEntity<ApiResponse<ClickStatsResponse>> {
     val clickCount = clickLogService.getClickCount(shortKey)
 
-    return ApiResponse.Companion.ok(
+    return ApiResponse.ok(
       ClickStatsResponse(
         shortKey = shortKey,
         totalClicks = clickCount

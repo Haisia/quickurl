@@ -12,6 +12,46 @@
         padding: 20px;
       }
 
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .user-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .user-email {
+        color: #555;
+        font-weight: bold;
+      }
+
+      .auth-links a,
+      .logout-btn {
+        color: #007bff;
+        text-decoration: none;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .auth-links a:hover,
+      .logout-btn:hover {
+        text-decoration: underline;
+      }
+
+      .logout-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: inherit;
+      }
+
       h1 {
         text-align: center;
       }
@@ -85,6 +125,17 @@
     </style>
   </head>
   <body>
+    <div class="header">
+      <div class="user-info" id="userInfo" style="display: none;">
+        <span class="user-email" id="userEmail"></span>
+        <button class="logout-btn" onclick="logout()">로그아웃</button>
+      </div>
+      <div class="auth-links" id="authLinks">
+        <a href="/login">로그인</a>
+        <a href="/register">회원가입</a>
+      </div>
+    </div>
+
     <h1>짧은 URL 생성기</h1>
 
     <div class="input-group">
@@ -103,6 +154,60 @@
     <div id="error" class="error"></div>
 
     <script>
+      // 페이지 로드 시 로그인 상태 확인 및 localStorage 정리
+      window.addEventListener('DOMContentLoaded', function() {
+        // 기존 localStorage 데이터 완전히 삭제 (XSS 방지)
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        
+        checkLoginStatus();
+      });
+
+      async function checkLoginStatus() {
+        try {
+          const response = await fetch('/api/v1/auth/me', {
+            credentials: 'include' // 쿠키 자동 전송
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.data && data.data.isLoggedIn) {
+              // 로그인 상태
+              document.getElementById('userInfo').style.display = 'flex';
+              document.getElementById('authLinks').style.display = 'none';
+              document.getElementById('userEmail').textContent = data.data.email;
+            } else {
+              // 비로그인 상태
+              showAuthLinks();
+            }
+          } else {
+            // API 호출 실패 시 비로그인 상태로 표시
+            showAuthLinks();
+          }
+        } catch (error) {
+          console.error('로그인 상태 확인 실패:', error);
+          showAuthLinks();
+        }
+      }
+
+      function showAuthLinks() {
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('authLinks').style.display = 'block';
+      }
+
+      async function logout() {
+        try {
+          await fetch('/api/v1/auth/logout', {
+            method: 'POST',
+            credentials: 'include' // 쿠키 포함
+          });
+        } catch (error) {
+          console.error('로그아웃 오류:', error);
+        } finally {
+          window.location.reload();
+        }
+      }
+
       async function createShortUrl() {
         const originalUrl = document.getElementById('originalUrl').value.trim();
         const errorDiv = document.getElementById('error');
@@ -128,10 +233,19 @@
             },
             body: JSON.stringify({
               originalUrl: originalUrl
-            })
+            }),
+            credentials: 'include' // 쿠키 자동 전송
           });
 
           if (!response.ok) {
+            // 401 에러 시 토큰 갱신 시도
+            if (response.status === 401) {
+              const refreshed = await refreshAccessToken();
+              if (refreshed) {
+                // 토큰 갱신 성공 시 재시도
+                return createShortUrl();
+              }
+            }
             throw new Error('URL 생성에 실패했습니다.');
           }
 
@@ -148,6 +262,27 @@
         } finally {
           createBtn.disabled = false;
           createBtn.textContent = '짧은 URL 생성';
+        }
+      }
+
+      async function refreshAccessToken() {
+        try {
+          const response = await fetch('/api/v1/auth/token/refresh', {
+            method: 'POST',
+            credentials: 'include' // refresh token 쿠키 자동 전송
+          });
+
+          if (response.ok) {
+            // 새로운 access token이 쿠키에 자동으로 설정됨
+            return true;
+          } else {
+            // refresh token도 만료된 경우 로그아웃
+            logout();
+            return false;
+          }
+        } catch (error) {
+          logout();
+          return false;
         }
       }
 

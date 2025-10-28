@@ -33,4 +33,9 @@ class RefreshTokenRepositoryImpl(
     return refreshTokenJpaRepository.increaseIssueCount(refreshToken) > 0
   }
 
+  @Transactional
+  override fun disableRefreshToken(token: String): Int {
+    return refreshTokenJpaRepository.disableRefreshToken(token)
+  }
+
 }

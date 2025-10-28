@@ -11,14 +11,6 @@ class EmailAlreadyRegisteredException(
   message: String = "Email is already registered."
 ) : ApplicationException(message, HttpStatus.BAD_REQUEST)
 
-class InvalidTokenAdapterException(
-  message: String = "Invalid authentication token."
-) : ApplicationException(message, HttpStatus.UNAUTHORIZED)
-
-class TokenExpiredAdapterException(
-  message: String = "Authentication token has expired."
-) : ApplicationException(message, HttpStatus.UNAUTHORIZED)
-
-class UnauthorizedAdapterException(
+class UnauthorizedException(
   message: String = "Access is denied."
 ) : ApplicationException(message, HttpStatus.FORBIDDEN)

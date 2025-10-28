@@ -27,7 +27,7 @@ class JwtAuthenticationFilter(
     try {
       val token = extractToken(request)
 
-      if (token != null && tokenResolver.validateToken(token)) {
+      if (token != null && tokenResolver.validateAsAccessToken(token)) {
         val userId = tokenResolver.getUserIdFromToken(token)
         val email = tokenResolver.getEmailFromToken(token)
 
@@ -52,11 +52,16 @@ class JwtAuthenticationFilter(
   }
 
   private fun extractToken(request: HttpServletRequest): String? {
-    val bearerToken = request.getHeader("Authorization")
-    return if (bearerToken?.startsWith("Bearer ") == true) {
-      bearerToken.substring(7)
-    } else {
-      null
+    // 쿠키에서만 토큰 추출
+    val cookies = request.cookies
+    if (cookies != null) {
+      for (cookie in cookies) {
+        if (cookie.name == "accessToken") {
+          return cookie.value
+        }
+      }
     }
+
+    return null
   }
 }
