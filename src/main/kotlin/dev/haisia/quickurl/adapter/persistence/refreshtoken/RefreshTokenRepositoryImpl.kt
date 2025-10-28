@@ -14,7 +14,7 @@ class RefreshTokenRepositoryImpl(
   @Transactional
   override fun save(refreshToken: String, user: User): String {
     // 해당 유저의 활성화된 토큰이 있다면 비활성화 처리
-    val userId = user.getNonNullId()
+    val userId = user.getIdOrThrow()
 
     return RefreshToken.of(refreshToken, user).let {
       refreshTokenJpaRepository.disableAllActiveTokensByUserId(userId)

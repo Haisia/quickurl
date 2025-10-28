@@ -39,8 +39,8 @@ class UserService(
       throw LoginFailedException()
     }
 
-    val accessToken = tokenProvider.generateAccessToken(foundUser.getNonNullId(), foundUser.email)
-    val refreshToken = tokenProvider.generateRefreshToken(foundUser.getNonNullId())
+    val accessToken = tokenProvider.generateAccessToken(foundUser.getIdOrThrow(), foundUser.email)
+    val refreshToken = tokenProvider.generateRefreshToken(foundUser.getIdOrThrow())
     refreshTokenRepository.save(refreshToken, foundUser)
 
     return Pair(accessToken, refreshToken)
@@ -50,11 +50,11 @@ class UserService(
     tokenResolver.validateAsRefreshToken(refreshToken)
 
     val userId = tokenResolver.getUserIdFromToken(refreshToken)
-    val foundUser = userRepository.findById(userId).orElseThrow()
+    val foundUser = userRepository.findById(userId).orElseThrow {UserNotFoundException()}
 
     refreshTokenRepository.increaseIssueCount(refreshToken)
 
-    return tokenProvider.generateAccessToken(foundUser.getNonNullId(), foundUser.email)
+    return tokenProvider.generateAccessToken(foundUser.getIdOrThrow(), foundUser.email)
   }
 
   override fun expireRefreshToken(refreshToken: String) {

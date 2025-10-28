@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.adapter.scheduler
 
-import dev.haisia.quickurl.application.`in`.UrlCleaner
+import dev.haisia.quickurl.application.url.`in`.UrlCleaner
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

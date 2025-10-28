@@ -52,7 +52,7 @@ class User private constructor(
     _hashedPassword = passwordEncoder.encode(newPassword.value)
   }
 
-  fun getNonNullId(): UUID {
+  fun getIdOrThrow(): UUID {
     return id ?: throw UserIdMissingException("User ID cannot be null for this operation.")
   }
 

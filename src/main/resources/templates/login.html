@@ -4,122 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 - QuickURL</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 400px;
-        margin: 50px auto;
-        padding: 20px;
-        background-color: #f5f5f5;
-      }
-
-      .container {
-        background-color: white;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-
-      h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        color: #333;
-      }
-
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 5px;
-        color: #555;
-        font-weight: bold;
-      }
-
-      input[type="email"],
-      input[type="password"] {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-        transition: border-color 0.3s;
-      }
-
-      input[type="email"]:focus,
-      input[type="password"]:focus {
-        outline: none;
-        border-color: #007bff;
-      }
-
-      button {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: 10px;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      button:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-      }
-
-      .error {
-        color: #dc3545;
-        margin-top: 10px;
-        font-size: 14px;
-        text-align: center;
-      }
-
-      .link-group {
-        text-align: center;
-        margin-top: 20px;
-      }
-
-      .link-group a {
-        color: #007bff;
-        text-decoration: none;
-      }
-
-      .link-group a:hover {
-        text-decoration: underline;
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <div class="container">
-      <h1>로그인</h1>
-      
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="email">이메일</label>
-          <input type="email" id="email" name="email" required placeholder="example@email.com"/>
+  <body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <div class="bg-white rounded-xl shadow-lg p-8 md:p-10">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-slate-800 mb-2">
+            로그인
+          </h1>
+          <p class="text-gray-600">계정에 로그인하세요</p>
         </div>
+        
+        <form id="loginForm" class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+              이메일
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required 
+              placeholder="example@email.com"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all outline-none"
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="password">비밀번호</label>
-          <input type="password" id="password" name="password" required placeholder="비밀번호를 입력하세요"/>
+          <div>
+            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+              비밀번호
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required 
+              placeholder="비밀번호를 입력하세요"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all outline-none"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            id="loginBtn"
+            class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            로그인
+          </button>
+        </form>
+
+        <div id="message" class="hidden mt-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm"></div>
+
+        <div class="mt-6 pt-6 border-t border-gray-200 text-center space-y-2">
+          <p class="text-gray-600">
+            계정이 없으신가요? 
+            <a href="/register" class="text-slate-800 hover:text-slate-600 font-semibold transition-colors">
+              회원가입
+            </a>
+          </p>
+          <p>
+            <a href="/" class="text-gray-600 hover:text-gray-800 transition-colors">
+              메인으로 돌아가기
+            </a>
+          </p>
         </div>
-
-        <button type="submit" id="loginBtn">로그인</button>
-      </form>
-
-      <div id="message" class="error"></div>
-
-      <div class="link-group">
-        <p>계정이 없으신가요? <a href="/register">회원가입</a></p>
-        <p><a href="/">메인으로 돌아가기</a></p>
       </div>
     </div>
 
@@ -133,6 +82,7 @@
         const loginBtn = document.getElementById('loginBtn');
 
         messageDiv.textContent = '';
+        messageDiv.classList.add('hidden');
 
         loginBtn.disabled = true;
         loginBtn.textContent = '로그인 중...';
@@ -157,10 +107,12 @@
             // 메인 페이지로 이동
             window.location.href = '/';
           } else {
-            messageDiv.textContent = data.message || '로그인에 실패했습니다.';
+            messageDiv.textContent = '❌ ' + (data.message || '로그인에 실패했습니다.');
+            messageDiv.classList.remove('hidden');
           }
         } catch (error) {
-          messageDiv.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+          messageDiv.textContent = '❌ 오류가 발생했습니다. 다시 시도해주세요.';
+          messageDiv.classList.remove('hidden');
         } finally {
           loginBtn.disabled = false;
           loginBtn.textContent = '로그인';

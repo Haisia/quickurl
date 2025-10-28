@@ -4,154 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>짧은 URL 생성기</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 20px;
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-      }
-
-      .user-info {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-      }
-
-      .user-email {
-        color: #555;
-        font-weight: bold;
-      }
-
-      .auth-links a,
-      .logout-btn {
-        color: #007bff;
-        text-decoration: none;
-        margin-left: 10px;
-        cursor: pointer;
-      }
-
-      .auth-links a:hover,
-      .logout-btn:hover {
-        text-decoration: underline;
-      }
-
-      .logout-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: inherit;
-      }
-
-      h1 {
-        text-align: center;
-      }
-
-      .input-group {
-        margin: 20px 0;
-      }
-
-      input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-
-      button {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: 10px;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      button:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-      }
-
-      .result {
-        margin-top: 30px;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 4px;
-        display: none;
-      }
-
-      .result.show {
-        display: block;
-      }
-
-      .short-url {
-        font-size: 18px;
-        font-weight: bold;
-        word-break: break-all;
-        margin: 10px 0;
-      }
-
-      .error {
-        color: #dc3545;
-        margin-top: 10px;
-      }
-
-      .copy-btn {
-        background-color: #28a745;
-        margin-top: 10px;
-      }
-
-      .copy-btn:hover {
-        background-color: #218838;
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <div class="header">
-      <div class="user-info" id="userInfo" style="display: none;">
-        <span class="user-email" id="userEmail"></span>
-        <button class="logout-btn" onclick="logout()">로그아웃</button>
+  <body class="bg-slate-100 min-h-screen p-4">
+    <div class="max-w-2xl mx-auto mt-8">
+      <!-- Header -->
+      <div class="bg-white/95 backdrop-blur rounded-t-xl shadow-md px-6 py-4 flex justify-between items-center">
+        <div id="userInfo" class="hidden flex items-center gap-6">
+          <span id="userEmail" class="text-gray-700 font-semibold"></span>
+          <div class="flex gap-3">
+            <a href="/urls/my" class="text-slate-800 hover:text-slate-600 font-medium transition-colors">
+              내 URL
+            </a>
+            <span class="text-gray-300">|</span>
+            <button onclick="logout()" class="text-red-600 hover:text-red-700 font-medium transition-colors">
+              로그아웃
+            </button>
+          </div>
+        </div>
+        <div id="authLinks" class="flex gap-3">
+          <a href="/login" class="text-slate-800 hover:text-slate-600 font-medium transition-colors">로그인</a>
+          <a href="/register" class="text-slate-700 hover:text-slate-600 font-medium transition-colors">회원가입</a>
+        </div>
       </div>
-      <div class="auth-links" id="authLinks">
-        <a href="/login">로그인</a>
-        <a href="/register">회원가입</a>
+
+      <!-- Main Content -->
+      <div class="bg-white rounded-b-xl shadow-lg p-8 md:p-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-center mb-2 text-slate-800">
+          짧은 URL 생성기
+        </h1>
+        <p class="text-center text-gray-600 mb-8">긴 URL을 간단하고 공유하기 쉬운 짧은 URL로 변환하세요</p>
+
+        <div class="space-y-4">
+          <div>
+            <label for="originalUrl" class="block text-sm font-semibold text-gray-700 mb-2">
+              원본 URL을 입력하세요:
+            </label>
+            <input 
+              type="text" 
+              id="originalUrl" 
+              placeholder="https://example.com/very/long/url"
+              class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all outline-none"
+            />
+          </div>
+
+          <button 
+            id="createBtn" 
+            onclick="createShortUrl()"
+            class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold text-lg transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            짧은 URL 생성
+          </button>
+        </div>
+
+        <!-- Result -->
+        <div id="result" class="hidden mt-8 p-6 bg-emerald-50 rounded-lg border-2 border-emerald-200">
+          <h3 class="text-xl font-bold text-gray-800 mb-3">생성된 짧은 URL:</h3>
+          <div id="shortUrl" class="text-2xl font-bold text-slate-800 break-all mb-4"></div>
+          <button 
+            onclick="copyToClipboard()"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium transition-colors"
+          >
+            📋 복사하기
+          </button>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="hidden mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded"></div>
       </div>
     </div>
-
-    <h1>짧은 URL 생성기</h1>
-
-    <div class="input-group">
-      <label for="originalUrl">원본 URL을 입력하세요:</label>
-      <input type="text" id="originalUrl" placeholder="https://example.com/very/long/url"/>
-    </div>
-
-    <button id="createBtn" onclick="createShortUrl()">짧은 URL 생성</button>
-
-    <div id="result" class="result">
-      <h3>생성된 짧은 URL:</h3>
-      <div id="shortUrl" class="short-url"></div>
-      <button class="copy-btn" onclick="copyToClipboard()">복사하기</button>
-    </div>
-
-    <div id="error" class="error"></div>
 
     <script>
       // 페이지 로드 시 로그인 상태 확인 및 localStorage 정리
@@ -173,8 +94,9 @@
             const data = await response.json();
             if (data.data && data.data.isLoggedIn) {
               // 로그인 상태
-              document.getElementById('userInfo').style.display = 'flex';
-              document.getElementById('authLinks').style.display = 'none';
+              document.getElementById('userInfo').classList.remove('hidden');
+              document.getElementById('userInfo').classList.add('flex');
+              document.getElementById('authLinks').classList.add('hidden');
               document.getElementById('userEmail').textContent = data.data.email;
             } else {
               // 비로그인 상태
@@ -191,8 +113,8 @@
       }
 
       function showAuthLinks() {
-        document.getElementById('userInfo').style.display = 'none';
-        document.getElementById('authLinks').style.display = 'block';
+        document.getElementById('userInfo').classList.add('hidden');
+        document.getElementById('authLinks').classList.remove('hidden');
       }
 
       async function logout() {
@@ -215,10 +137,12 @@
         const createBtn = document.getElementById('createBtn');
 
         errorDiv.textContent = '';
-        resultDiv.classList.remove('show');
+        errorDiv.classList.add('hidden');
+        resultDiv.classList.add('hidden');
 
         if (!originalUrl) {
-          errorDiv.textContent = 'URL을 입력해주세요.';
+          errorDiv.textContent = '⚠️ URL을 입력해주세요.';
+          errorDiv.classList.remove('hidden');
           return;
         }
 
@@ -226,7 +150,7 @@
         createBtn.textContent = '생성 중...';
 
         try {
-          const response = await fetch('/api/v1/shorten', {
+          const response = await fetch('/api/v1/url/shorten', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -255,10 +179,11 @@
           const shortUrl = `${window.location.origin}/${shortKey}`;
 
           document.getElementById('shortUrl').textContent = shortUrl;
-          resultDiv.classList.add('show');
+          resultDiv.classList.remove('hidden');
 
         } catch (error) {
-          errorDiv.textContent = error.message || '오류가 발생했습니다.';
+          errorDiv.textContent = '❌ ' + (error.message || '오류가 발생했습니다.');
+          errorDiv.classList.remove('hidden');
         } finally {
           createBtn.disabled = false;
           createBtn.textContent = '짧은 URL 생성';
@@ -289,7 +214,12 @@
       function copyToClipboard() {
         const shortUrl = document.getElementById('shortUrl').textContent;
         navigator.clipboard.writeText(shortUrl).then(() => {
-          alert('클립보드에 복사되었습니다!');
+          // 토스트 알림
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+          toast.textContent = '✅ 클립보드에 복사되었습니다!';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
         }).catch(() => {
           alert('복사에 실패했습니다.');
         });

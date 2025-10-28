@@ -63,7 +63,7 @@ class Url private constructor(
     this.shortKey = urlEncoder.encode(id)
   }
 
-  fun requireShortKey(): String = this.shortKey ?: throw ShortKeyNotGeneratedException()
+  fun getShortKeyOrThrow(): String = this.shortKey ?: throw ShortKeyNotGeneratedException()
 
   fun hasShortKey(): Boolean = shortKey != null
 
