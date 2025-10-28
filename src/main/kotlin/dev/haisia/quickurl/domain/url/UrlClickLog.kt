@@ -5,14 +5,14 @@ import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
 
 @Table(
-  name = "click_logs",
+  name = "url_click_logs",
   indexes = [
     Index(name = "idx_short_key", columnList = "short_key"),
     Index(name = "idx_clicked_at", columnList = "clicked_at")
   ]
 )
 @Entity
-class ClickLog private constructor(
+class UrlClickLog private constructor(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -39,8 +39,8 @@ class ClickLog private constructor(
       ipAddress: String?,
       userAgent: String?,
       referer: String?
-    ): ClickLog {
-      return ClickLog(
+    ): UrlClickLog {
+      return UrlClickLog(
         shortKey = shortKey,
         ipAddress = ipAddress,
         userAgent = userAgent,
@@ -57,7 +57,7 @@ class ClickLog private constructor(
     val thisEffectiveClass =
       if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
     if (thisEffectiveClass != oEffectiveClass) return false
-    other as ClickLog
+    other as UrlClickLog
 
     return id != null && id == other.id
   }

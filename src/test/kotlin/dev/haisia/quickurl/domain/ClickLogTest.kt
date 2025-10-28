@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.domain
 
-import dev.haisia.quickurl.domain.url.ClickLog
+import dev.haisia.quickurl.domain.url.UrlClickLog
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.DisplayName
@@ -16,13 +16,13 @@ class ClickLogTest {
     val userAgent = "Mozilla/5.0"
     val referer = "https://example.com"
 
-    val clickLog = ClickLog.of(shortKey, ipAddress, userAgent, referer)
+    val urlClickLog = UrlClickLog.of(shortKey, ipAddress, userAgent, referer)
 
-    assertEquals(shortKey, clickLog.shortKey)
-    assertEquals(ipAddress, clickLog.ipAddress)
-    assertEquals(userAgent, clickLog.userAgent)
-    assertEquals(referer, clickLog.referer)
-    assertNotNull(clickLog.clickedAt)
+    assertEquals(shortKey, urlClickLog.shortKey)
+    assertEquals(ipAddress, urlClickLog.ipAddress)
+    assertEquals(userAgent, urlClickLog.userAgent)
+    assertEquals(referer, urlClickLog.referer)
+    assertNotNull(urlClickLog.clickedAt)
   }
 
   @Test
@@ -30,12 +30,12 @@ class ClickLogTest {
   fun testCreateClickLogWithNullableFields() {
     val shortKey = "abc123"
 
-    val clickLog = ClickLog.of(shortKey, null, null, null)
+    val urlClickLog = UrlClickLog.of(shortKey, null, null, null)
 
-    assertEquals(shortKey, clickLog.shortKey)
-    assertEquals(null, clickLog.ipAddress)
-    assertEquals(null, clickLog.userAgent)
-    assertEquals(null, clickLog.referer)
-    assertNotNull(clickLog.clickedAt)
+    assertEquals(shortKey, urlClickLog.shortKey)
+    assertEquals(null, urlClickLog.ipAddress)
+    assertEquals(null, urlClickLog.userAgent)
+    assertEquals(null, urlClickLog.referer)
+    assertNotNull(urlClickLog.clickedAt)
   }
 }

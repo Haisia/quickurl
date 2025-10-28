@@ -12,6 +12,7 @@ import dev.haisia.quickurl.application.user.out.UserRepository
 import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -26,6 +27,7 @@ class UrlService(
   private val urlCacheRepository: UrlCacheRepository,
   private val authenticationContext: AuthenticationContext,
   private val userRepository: UserRepository,
+  private val eventPublisher: ApplicationEventPublisher,
 ) : UrlCreator, UrlFinder, UrlCleaner {
   companion object {
     private val log = LoggerFactory.getLogger(UrlService::class.java)
@@ -83,10 +85,15 @@ class UrlService(
 
   override fun deleteMyUrl(shortKey: String) {
     val userId = authenticationContext.getCurrentUserId()
+    val userIdString = userId.toString()
 
-    urlRepository.deleteByShortKeyAndCreatedBy(shortKey, userId.toString()).let {
-      if(it < 1) throw ShortUrlNotFoundException("URL not found for key: $shortKey")
-      else log.info("Deleted URL for key: {}", shortKey)
+    val deletedCount = urlRepository.deleteByShortKeyAndCreatedBy(shortKey, userIdString)
+
+    check(deletedCount >= 1) {
+      ShortUrlNotFoundException("URL not found for key: $shortKey")
     }
+
+    log.info("Deleted URL for key: {}", shortKey)
+    eventPublisher.publishEvent(UrlEvent.UrlDeleted(shortKey))
   }
 }

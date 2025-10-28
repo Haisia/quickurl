@@ -1,24 +1,27 @@
-package dev.haisia.quickurl.adapter.persistence.clickstats
+package dev.haisia.quickurl.adapter.persistence.urlclickstatistics
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
+import java.time.LocalDate
 
-@Table(name = "click_total_stats")
+@Table(name = "daily_click_count")
 @Entity
-class ClickTotalStats(
-  /* 고정 pk를 활용 해 row 가 1개로 유지됨을 보장 */
-  @Id
-  @Column(name = "id")
-  val id: Long = 1L,
+class DailyClickCount(
 
-  @Column(name = "total_clicks", nullable = false)
-  var totalClicks: Long = 0L,
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  val id: Long? = null,
+
+  @Column(name = "daily_clicks", nullable = false)
+  var dailyClicks: Long = 0L,
+
+  @Column(name = "date", nullable = false, unique = true)
+  val date: LocalDate = LocalDate.now()
 ) {
-  fun incrementTotalClicks(amount: Long = 1L) {
-    this.totalClicks += amount
+
+  fun incrementClicks(amount: Long = 1L) {
+    this.dailyClicks += amount
   }
 
   final override fun equals(other: Any?): Boolean {
@@ -29,12 +32,11 @@ class ClickTotalStats(
     val thisEffectiveClass =
       if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
     if (thisEffectiveClass != oEffectiveClass) return false
-    other as ClickTotalStats
+    other as DailyClickCount
 
     return id != null && id == other.id
   }
 
   final override fun hashCode(): Int =
     if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass.hashCode() else javaClass.hashCode()
-
 }

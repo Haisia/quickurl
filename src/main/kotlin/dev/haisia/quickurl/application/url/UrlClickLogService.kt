@@ -1,9 +1,9 @@
 package dev.haisia.quickurl.application.url
 
-import dev.haisia.quickurl.application.url.`in`.ClickLogger
-import dev.haisia.quickurl.application.url.out.ClickLogRepository
-import dev.haisia.quickurl.application.url.out.ClickStatsRepository
-import dev.haisia.quickurl.domain.url.ClickLog
+import dev.haisia.quickurl.application.url.`in`.UrlClickLogger
+import dev.haisia.quickurl.application.url.out.UrlClickLogRepository
+import dev.haisia.quickurl.application.url.out.UrlClickStatisticsRepository
+import dev.haisia.quickurl.domain.url.UrlClickLog
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ClickLogService(
-  private val clickLogRepository: ClickLogRepository,
-  private val clickStateRepository: ClickStatsRepository,
-) : ClickLogger {
+class UrlClickLogService(
+  private val logRepository: UrlClickLogRepository,
+  private val statisticsRepository: UrlClickStatisticsRepository,
+) : UrlClickLogger {
   companion object {
-    private val log = LoggerFactory.getLogger(ClickLogService::class.java)
+    private val log = LoggerFactory.getLogger(UrlClickLogService::class.java)
   }
 
   @Async
@@ -28,15 +28,15 @@ class ClickLogService(
     referer: String?
   ) {
     try {
-      val clickLog = ClickLog.of(
+      val urlClickLog = UrlClickLog.of(
         shortKey = shortKey,
         ipAddress = ipAddress,
         userAgent = userAgent,
         referer = referer
       )
       
-      clickLogRepository.save(clickLog)
-      clickStateRepository.click()
+      logRepository.save(urlClickLog)
+      statisticsRepository.click()
       
       log.debug("Click log saved - shortKey: {}, ip: {}, userAgent: {}", shortKey, ipAddress, userAgent?.take(50))
     } catch (e: Exception) {
@@ -46,7 +46,7 @@ class ClickLogService(
 
   @Transactional(readOnly = true)
   fun getClickCount(shortKey: String): Long {
-    return clickLogRepository.countByShortKey(shortKey)
+    return logRepository.countByShortKey(shortKey)
   }
 
   @Transactional(readOnly = true)
@@ -55,11 +55,11 @@ class ClickLogService(
   }
 
   private fun getClickTodayCount(): Long {
-    return clickStateRepository.getTodayClickCount()
+    return statisticsRepository.getDailyClickCount()
   }
 
   private fun getClickTotalCount(): Long {
-    return clickStateRepository.getTotalClickCount()
+    return statisticsRepository.getCumulativeClickCount()
   }
 
 }
