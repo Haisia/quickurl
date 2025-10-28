@@ -7,4 +7,5 @@ interface AuthenticationContext {
   fun getCurrentUserId(): UUID
   fun getCurrentEmail(): Email
   fun isAuthenticated(): Boolean
+  fun getCurrentUserIdAllowNull(): UUID?
 }

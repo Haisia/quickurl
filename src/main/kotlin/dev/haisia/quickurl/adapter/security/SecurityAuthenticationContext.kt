@@ -23,6 +23,14 @@ class SecurityAuthenticationContext : AuthenticationContext {
     return auth != null && auth.isAuthenticated
   }
 
+  override fun getCurrentUserIdAllowNull(): UUID? {
+    return try {
+      getUserDetails().userId
+    } catch (_: UnauthorizedAdapterException) {
+      null
+    }
+  }
+
   private fun getUserDetails(): CustomUserDetails {
     val authentication = SecurityContextHolder.getContext().authentication
       ?: throw UnauthorizedAdapterException("인증되지 않은 사용자입니다")
