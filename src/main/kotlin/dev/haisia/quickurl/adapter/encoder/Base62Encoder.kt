@@ -2,6 +2,7 @@ package dev.haisia.quickurl.adapter.encoder
 
 import dev.haisia.quickurl.domain.UrlEncoder
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class Base62Encoder: UrlEncoder {
@@ -19,18 +20,9 @@ class Base62Encoder: UrlEncoder {
       num /= base
     }
 
-    return sb.reverse().toString()
-  }
+    // 난수 추가
+    UUID.randomUUID().toString().substring(0, 8).let {sb.append(it)}
 
-  override fun decode(url: String): Long {
-    var num = 0L
-    for (char in url) {
-      val index = chars.indexOf(char)
-      if (index == -1) {
-        throw InvalidShortKeyFormatException("Invalid character in encoded string: $char")
-      }
-      num = num * base + index
-    }
-    return num
+    return sb.reverse().toString()
   }
 }

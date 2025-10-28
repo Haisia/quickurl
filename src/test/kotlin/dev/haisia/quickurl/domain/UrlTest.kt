@@ -113,7 +113,6 @@ class UrlTest {
     val url = UrlFixture.createUrl(id = 123L, originalUrl = "https://example.com")
     val mockEncoder = object : UrlEncoder {
       override fun encode(id: Long): String = "encoded_${id}"
-      override fun decode(url: String): Long = 0L
     }
 
     url.generateShortKey(mockEncoder)
@@ -128,7 +127,6 @@ class UrlTest {
     val url = Url.of("https://example.com")
     val mockEncoder = object : UrlEncoder {
       override fun encode(id: Long): String = "encoded_${id}"
-      override fun decode(url: String): Long = 0L
     }
 
     val exception = assertThrows(ShortKeyGenerationException::class.java) {
