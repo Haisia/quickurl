@@ -1,5 +1,8 @@
 package dev.haisia.quickurl.adapter.persistence
 
+import dev.haisia.quickurl.adapter.persistence.url.UrlCache
+import dev.haisia.quickurl.adapter.persistence.url.UrlCacheRedisRepository
+import dev.haisia.quickurl.adapter.persistence.url.UrlCacheRepositoryImpl
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull

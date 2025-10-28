@@ -1,10 +1,10 @@
 package dev.haisia.quickurl.adapter.exceptionhandler
 
-import dev.haisia.quickurl.adapter.webapi.dto.ApiErrorData
-import dev.haisia.quickurl.adapter.webapi.dto.ApiResponse
+import dev.haisia.quickurl.adapter.webapi.ApiErrorData
+import dev.haisia.quickurl.adapter.webapi.ApiResponse
 import dev.haisia.quickurl.domain.DomainException
-import dev.haisia.quickurl.domain.ShortKeyGenerationException
-import dev.haisia.quickurl.domain.ShortKeyNotGeneratedException
+import dev.haisia.quickurl.domain.url.ShortKeyGenerationException
+import dev.haisia.quickurl.domain.url.ShortKeyNotGeneratedException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

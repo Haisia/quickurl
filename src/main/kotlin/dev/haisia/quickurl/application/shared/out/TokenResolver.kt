@@ -1,0 +1,22 @@
+package dev.haisia.quickurl.application.shared.out
+
+import dev.haisia.quickurl.domain.Email
+import java.time.LocalDateTime
+import java.util.Date
+import java.util.UUID
+
+interface TokenResolver {
+  fun getUserIdFromToken(token: String): UUID
+
+  fun getEmailFromToken(token: String): Email
+
+  fun validateToken(token: String): Boolean
+
+  fun getTokenType(token: String): String
+
+  fun getExpirationDate(token: String): Date
+
+  fun getExpirationDateTime(token: String): LocalDateTime
+
+  fun isTokenExpired(token: String): Boolean
+}

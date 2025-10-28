@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.fixture
 
-import dev.haisia.quickurl.domain.Url
+import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.fixture.TestReflectionUtils.setFieldValue
 import java.time.LocalDateTime
 

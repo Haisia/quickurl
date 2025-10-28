@@ -43,3 +43,9 @@ rate-limit:
     - /favicon.ico
     - /actuator
     - /error
+jwt:
+  secret: thisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkey
+  access-token:
+    validity-second: 3600
+  refresh-token:
+    validity-second: 86400

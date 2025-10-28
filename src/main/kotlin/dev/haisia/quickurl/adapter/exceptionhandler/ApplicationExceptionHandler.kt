@@ -1,8 +1,8 @@
 package dev.haisia.quickurl.adapter.exceptionhandler
 
-import dev.haisia.quickurl.adapter.webapi.dto.ApiErrorData
-import dev.haisia.quickurl.adapter.webapi.dto.ApiResponse
-import dev.haisia.quickurl.application.ApplicationException
+import dev.haisia.quickurl.adapter.webapi.ApiErrorData
+import dev.haisia.quickurl.adapter.webapi.ApiResponse
+import dev.haisia.quickurl.application.shared.ApplicationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
