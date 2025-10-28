@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application.`in`
+package dev.haisia.quickurl.application.url.`in`
 
 interface ClickLogger {
   /**

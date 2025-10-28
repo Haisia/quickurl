@@ -14,3 +14,7 @@ class EmailAlreadyRegisteredException(
 class UnauthorizedException(
   message: String = "Access is denied."
 ) : ApplicationException(message, HttpStatus.FORBIDDEN)
+
+class UserNotFoundException(
+  message: String = "User not found."
+) : ApplicationException(message, HttpStatus.NOT_FOUND)

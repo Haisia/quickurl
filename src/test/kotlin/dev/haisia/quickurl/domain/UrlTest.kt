@@ -140,21 +140,21 @@ class UrlTest {
 
   @Test
   @DisplayName("shortKey가 있으면 requireShortKey가 값을 반환한다")
-  fun testRequireShortKeyWithValue() {
+  fun testGetShortKeyOrThrowWithValue() {
     val url = UrlFixture.createUrl(shortKey = "abc123")
 
-    val shortKey = url.requireShortKey()
+    val shortKey = url.getShortKeyOrThrow()
 
     assertEquals("abc123", shortKey)
   }
 
   @Test
   @DisplayName("shortKey가 없으면 requireShortKey가 예외를 발생시킨다")
-  fun testRequireShortKeyWithoutValue() {
+  fun testGetShortKeyOrThrowWithoutValue() {
     val url = Url.of("https://example.com")
 
     val exception = assertThrows(ShortKeyNotGeneratedException::class.java) {
-      url.requireShortKey()
+      url.getShortKeyOrThrow()
     }
     
     assertTrue(exception.message?.contains("Short key has not been generated yet") ?: false)

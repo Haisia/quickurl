@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application.`in`
+package dev.haisia.quickurl.application.url.`in`
 
 interface UrlCleaner {
   /**
@@ -7,4 +7,6 @@ interface UrlCleaner {
    * @return 삭제된 URL 개수
    */
   fun deleteUnusedUrls(thresholdMonths: Long = 3): Int
+
+  fun deleteMyUrl(shortKey: String)
 }

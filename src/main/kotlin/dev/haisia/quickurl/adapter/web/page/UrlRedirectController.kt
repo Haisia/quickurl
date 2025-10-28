@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.adapter.web.page
 
-import dev.haisia.quickurl.application.`in`.ClickLogger
-import dev.haisia.quickurl.application.`in`.UrlFinder
+import dev.haisia.quickurl.application.url.`in`.ClickLogger
+import dev.haisia.quickurl.application.url.`in`.UrlFinder
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
