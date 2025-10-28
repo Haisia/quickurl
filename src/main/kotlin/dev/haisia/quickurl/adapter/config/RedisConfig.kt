@@ -35,6 +35,21 @@ class RedisConfig {
   }
 
   /**
+   * Long 값 전용 RedisTemplate 설정
+   * 클릭 통계 등 숫자 데이터 저장에 사용
+   */
+  @Bean
+  fun longRedisTemplate(connectionFactory: RedisConnectionFactory): RedisTemplate<String, Long> {
+    return RedisTemplate<String, Long>().apply {
+      setConnectionFactory(connectionFactory)
+      keySerializer = StringRedisSerializer()
+      valueSerializer = StringRedisSerializer() // Long을 String으로 저장
+      hashKeySerializer = StringRedisSerializer()
+      hashValueSerializer = StringRedisSerializer()
+    }
+  }
+
+  /**
   * Spring Cache Manager 설정
   * @Cacheable 등의 어노테이션에 사용
   */

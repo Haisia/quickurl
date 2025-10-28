@@ -26,7 +26,7 @@ interface UrlRepository: JpaRepository<Url, Long> {
       u.createdAt
     )
     from Url u 
-    left join ClickLog cl ON cl.shortKey = u.shortKey
+    left join UrlClickLog cl ON cl.shortKey = u.shortKey
     where u.createdBy = :createdBy
     group by u.id, u.shortKey, u.originalUrl, u.createdBy, u.lastUsedAt, u.createdAt
     order by u.createdAt DESC

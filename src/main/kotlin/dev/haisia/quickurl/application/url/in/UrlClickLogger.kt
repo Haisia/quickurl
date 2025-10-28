@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.application.url.`in`
 
-interface ClickLogger {
+interface UrlClickLogger {
   /**
    * 클릭 이벤트를 비동기로 로깅합니다.
    * 

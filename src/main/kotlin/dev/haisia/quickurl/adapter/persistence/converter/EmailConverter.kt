@@ -3,7 +3,6 @@ package dev.haisia.quickurl.adapter.persistence.converter
 import dev.haisia.quickurl.domain.Email
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
-import kotlin.let
 
 @Converter(autoApply = true)
 class EmailConverter : AttributeConverter<Email, String> {

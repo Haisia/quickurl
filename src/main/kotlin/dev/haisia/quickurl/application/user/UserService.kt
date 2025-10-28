@@ -35,7 +35,7 @@ class UserService(
   override fun loginUser(email: Email, password: Password): Pair<String, String> {
     val foundUser = userRepository.findByEmail(email) ?: throw LoginFailedException()
 
-    if(!foundUser.verifyPassword(password, passwordEncoder)) {
+    require(foundUser.verifyPassword(password, passwordEncoder)) {
       throw LoginFailedException()
     }
 

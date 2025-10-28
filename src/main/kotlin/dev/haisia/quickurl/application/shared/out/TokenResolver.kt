@@ -2,8 +2,7 @@ package dev.haisia.quickurl.application.shared.out
 
 import dev.haisia.quickurl.domain.Email
 import java.time.LocalDateTime
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 interface TokenResolver {
   fun getUserIdFromToken(token: String): UUID

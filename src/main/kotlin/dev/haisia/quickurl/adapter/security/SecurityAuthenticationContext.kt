@@ -5,7 +5,7 @@ import dev.haisia.quickurl.application.user.UnauthorizedException
 import dev.haisia.quickurl.domain.Email
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import java.util.UUID
+import java.util.*
 
 @Component
 class SecurityAuthenticationContext : AuthenticationContext {

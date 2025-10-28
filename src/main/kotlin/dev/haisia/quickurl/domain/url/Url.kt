@@ -3,7 +3,7 @@ package dev.haisia.quickurl.domain.url
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Table(
   name = "urls",

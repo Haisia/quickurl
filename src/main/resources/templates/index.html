@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -102,7 +102,7 @@
 
       async function loadGlobalStats() {
         try {
-          const response = await fetch('/api/v1/stats/global', {
+          const response = await fetch('/api/v1/statistics/global', {
             credentials: 'include'
           });
 
@@ -110,9 +110,9 @@
             const data = await response.json();
             if (data.data) {
               document.getElementById('todayClickCount').textContent = 
-                data.data.today_click_count.toLocaleString();
+                data.data.daily_click_count.toLocaleString();
               document.getElementById('totalClickCount').textContent = 
-                data.data.total_click_count.toLocaleString();
+                data.data.cumulative_click_count.toLocaleString();
             }
           }
         } catch (error) {

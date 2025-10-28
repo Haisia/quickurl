@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.persistence.clickstats
+package dev.haisia.quickurl.adapter.persistence.urlclickstatistics
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -6,19 +6,19 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.proxy.HibernateProxy
 
-@Table(name = "click_total_stats")
+@Table(name = "cumulative_click_count")
 @Entity
-class ClickTotalStats(
-  /* 고정 pk를 활용 해 row 가 1개로 유지됨을 보장 */
+class CumulativeClickCount(
+  /* 고정 pk를 활용해 row가 1개로 유지됨을 보장 */
   @Id
   @Column(name = "id")
   val id: Long = 1L,
 
-  @Column(name = "total_clicks", nullable = false)
-  var totalClicks: Long = 0L,
+  @Column(name = "cumulative_clicks", nullable = false)
+  var cumulativeClicks: Long = 0L,
 ) {
-  fun incrementTotalClicks(amount: Long = 1L) {
-    this.totalClicks += amount
+  fun incrementClicks(amount: Long = 1L) {
+    this.cumulativeClicks += amount
   }
 
   final override fun equals(other: Any?): Boolean {
@@ -29,12 +29,11 @@ class ClickTotalStats(
     val thisEffectiveClass =
       if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
     if (thisEffectiveClass != oEffectiveClass) return false
-    other as ClickTotalStats
+    other as CumulativeClickCount
 
-    return id != null && id == other.id
+    return id == other.id
   }
 
   final override fun hashCode(): Int =
     if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass.hashCode() else javaClass.hashCode()
-
 }

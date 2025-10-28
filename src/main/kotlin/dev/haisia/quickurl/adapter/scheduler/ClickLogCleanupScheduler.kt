@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.adapter.scheduler
 
-import dev.haisia.quickurl.application.out.ClickLogRepository
+import dev.haisia.quickurl.application.url.out.UrlClickLogRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 */
 @Component
 class ClickLogCleanupScheduler(
-  private val clickLogRepository: ClickLogRepository
+  private val urlClickLogRepository: UrlClickLogRepository
 ) {
   companion object {
     private val log = LoggerFactory.getLogger(ClickLogCleanupScheduler::class.java)
@@ -31,7 +31,7 @@ class ClickLogCleanupScheduler(
     log.info("Starting click log cleanup - deleting logs before: {}", threshold)
 
     try {
-      val deletedCount = clickLogRepository.deleteByClickedAtBefore(threshold)
+      val deletedCount = urlClickLogRepository.deleteByClickedAtBefore(threshold)
       log.info(
         "Click log cleanup completed - deleted {} logs (older than {} months)",
         deletedCount,

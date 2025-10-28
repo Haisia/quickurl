@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application.out
+package dev.haisia.quickurl.application.url.out
 
 interface UrlCacheRepository {
   fun get(shortKey: String): String?

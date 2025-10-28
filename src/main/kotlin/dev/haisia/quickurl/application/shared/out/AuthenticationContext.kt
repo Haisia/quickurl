@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.application.shared.out
 
 import dev.haisia.quickurl.domain.Email
-import java.util.UUID
+import java.util.*
 
 interface AuthenticationContext {
   fun getCurrentUserId(): UUID

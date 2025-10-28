@@ -1,6 +1,6 @@
 package dev.haisia.quickurl.adapter.web.page
 
-import dev.haisia.quickurl.application.url.`in`.ClickLogger
+import dev.haisia.quickurl.application.url.`in`.UrlClickLogger
 import dev.haisia.quickurl.application.url.`in`.UrlFinder
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.CacheControl
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 @Controller
 class UrlRedirectController(
   private val urlFinder: UrlFinder,
-  private val clickLogger: ClickLogger,
+  private val urlClickLogger: UrlClickLogger,
 ) {
 
   @GetMapping("/{shortKey}")
@@ -26,7 +26,7 @@ class UrlRedirectController(
     val url = urlFinder.findOriginalUrl(shortKey)
 
     /* 비동기로 로그 수집 */
-    clickLogger.logClickAsync(
+    urlClickLogger.logClickAsync(
       shortKey = shortKey,
       ipAddress = request.remoteAddr,
       userAgent = request.getHeader("User-Agent"),

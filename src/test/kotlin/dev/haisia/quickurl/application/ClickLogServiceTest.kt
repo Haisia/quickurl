@@ -1,8 +1,8 @@
 package dev.haisia.quickurl.application
 
 import dev.haisia.quickurl.application.out.ClickLogRepository
-import dev.haisia.quickurl.application.url.ClickLogService
-import dev.haisia.quickurl.domain.url.ClickLog
+import dev.haisia.quickurl.application.url.UrlClickLogService
+import dev.haisia.quickurl.domain.url.UrlClickLog
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class ClickLogServiceTest {
 
   private val clickLogRepository = mockk<ClickLogRepository>()
-  private val clickLogService = ClickLogService(clickLogRepository)
+  private val urlClickLogService = UrlClickLogService(clickLogRepository)
 
   @Test
   @DisplayName("클릭 로그를 성공적으로 저장한다")
@@ -25,14 +25,14 @@ class ClickLogServiceTest {
     val userAgent = "Mozilla/5.0"
     val referer = "https://example.com"
 
-    val clickLogSlot = slot<ClickLog>()
-    every { clickLogRepository.save(capture(clickLogSlot)) } answers { firstArg() }
+    val urlClickLogSlot = slot<UrlClickLog>()
+    every { clickLogRepository.save(capture(urlClickLogSlot)) } answers { firstArg() }
 
-    clickLogService.logClickAsync(shortKey, ipAddress, userAgent, referer)
+    urlClickLogService.logClickAsync(shortKey, ipAddress, userAgent, referer)
 
     verify { clickLogRepository.save(any()) }
     
-    val savedLog = clickLogSlot.captured
+    val savedLog = urlClickLogSlot.captured
     assertEquals(shortKey, savedLog.shortKey)
     assertEquals(ipAddress, savedLog.ipAddress)
     assertEquals(userAgent, savedLog.userAgent)
@@ -47,7 +47,7 @@ class ClickLogServiceTest {
     val expectedCount = 42L
     every { clickLogRepository.countByShortKey(shortKey) } returns expectedCount
 
-    val result = clickLogService.getClickCount(shortKey)
+    val result = urlClickLogService.getClickCount(shortKey)
 
     assertEquals(expectedCount, result)
     verify { clickLogRepository.countByShortKey(shortKey) }

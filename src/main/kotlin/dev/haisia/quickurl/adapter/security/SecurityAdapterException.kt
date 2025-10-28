@@ -1,7 +1,6 @@
 package dev.haisia.quickurl.adapter.security
 
 import dev.haisia.quickurl.adapter.AdapterException
-import dev.haisia.quickurl.application.shared.ApplicationException
 import org.springframework.http.HttpStatus
 
 abstract class SecurityAdapterException : AdapterException {
