@@ -15,4 +15,7 @@ interface ClickLogger {
     userAgent: String?,
     referer: String?
   )
+
+  /* <today, total> */
+  fun getGlobalClickStats(): Pair<Long, Long>
 }

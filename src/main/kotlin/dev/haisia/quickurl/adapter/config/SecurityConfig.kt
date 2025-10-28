@@ -48,6 +48,7 @@ class SecurityConfig(
             "/api/v1/auth/me",
             "/api/v1/auth/token/refresh",
             "/api/v1/shorten",
+            "/api/v1/stats/**",
             "/{shortUrl}"
           ).permitAll()
           .requestMatchers("/actuator/**").permitAll()
