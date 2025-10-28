@@ -52,6 +52,10 @@ class User private constructor(
     _hashedPassword = passwordEncoder.encode(newPassword.value)
   }
 
+  fun getNonNullId(): UUID {
+    return id ?: throw UserIdMissingException("User ID cannot be null for this operation.")
+  }
+
   final override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other == null) return false

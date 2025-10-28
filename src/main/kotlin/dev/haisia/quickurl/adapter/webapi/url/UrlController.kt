@@ -1,8 +1,8 @@
-package dev.haisia.quickurl.adapter.webapi
+package dev.haisia.quickurl.adapter.webapi.url
 
-import dev.haisia.quickurl.adapter.webapi.dto.ApiResponse
-import dev.haisia.quickurl.adapter.webapi.dto.CreateUrlRequest
-import dev.haisia.quickurl.adapter.webapi.dto.CreateUrlResponse
+import dev.haisia.quickurl.adapter.webapi.ApiResponse
+import dev.haisia.quickurl.adapter.webapi.url.dto.CreateUrlRequest
+import dev.haisia.quickurl.adapter.webapi.url.dto.CreateUrlResponse
 import dev.haisia.quickurl.application.`in`.UrlCreator
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

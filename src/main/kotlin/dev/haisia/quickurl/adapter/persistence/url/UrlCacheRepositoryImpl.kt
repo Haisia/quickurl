@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.persistence
+package dev.haisia.quickurl.adapter.persistence.url
 
 import dev.haisia.quickurl.application.out.UrlCacheRepository
 import org.springframework.stereotype.Repository

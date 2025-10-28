@@ -2,7 +2,7 @@ package dev.haisia.quickurl.adapter.filter
 
 import dev.haisia.quickurl.adapter.config.RateLimitProperties
 import dev.haisia.quickurl.adapter.serializer.JsonSerializer
-import dev.haisia.quickurl.adapter.webapi.dto.ApiErrorData
+import dev.haisia.quickurl.adapter.webapi.ApiErrorData
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

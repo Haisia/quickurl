@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application
+package dev.haisia.quickurl.application.url
 
 import dev.haisia.quickurl.application.`in`.ClickLogger
 import dev.haisia.quickurl.application.out.ClickLogRepository
@@ -35,12 +35,7 @@ class ClickLogService(
       
       clickLogRepository.save(clickLog)
       
-      log.debug(
-        "Click log saved - shortKey: {}, ip: {}, userAgent: {}", 
-        shortKey, 
-        ipAddress, 
-        userAgent?.take(50)
-      )
+      log.debug("Click log saved - shortKey: {}, ip: {}, userAgent: {}", shortKey, ipAddress, userAgent?.take(50))
     } catch (e: Exception) {
       log.error("Failed to save click log for shortKey: {}", shortKey, e)
     }

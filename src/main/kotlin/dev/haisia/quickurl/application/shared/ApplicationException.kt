@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application
+package dev.haisia.quickurl.application.shared
 
 import org.springframework.http.HttpStatus
 
@@ -13,7 +13,3 @@ abstract class ApplicationException : RuntimeException {
     this.httpStatus = httpStatus
   }
 }
-
-class ShortUrlNotFoundException(
-  message: String = "The requested short URL was not found.",
-) : ApplicationException(message, HttpStatus.NOT_FOUND)

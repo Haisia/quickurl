@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.persistence
+package dev.haisia.quickurl.adapter.persistence.url
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

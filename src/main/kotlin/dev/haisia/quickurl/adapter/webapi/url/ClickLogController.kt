@@ -1,8 +1,8 @@
-package dev.haisia.quickurl.adapter.webapi
+package dev.haisia.quickurl.adapter.webapi.url
 
-import dev.haisia.quickurl.adapter.webapi.dto.ApiResponse
-import dev.haisia.quickurl.adapter.webapi.dto.ClickStatsResponse
-import dev.haisia.quickurl.application.ClickLogService
+import dev.haisia.quickurl.adapter.webapi.ApiResponse
+import dev.haisia.quickurl.adapter.webapi.url.dto.ClickStatsResponse
+import dev.haisia.quickurl.application.url.ClickLogService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

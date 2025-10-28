@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.application
+package dev.haisia.quickurl.application.url
 
 import dev.haisia.quickurl.application.`in`.UrlCleaner
 import dev.haisia.quickurl.application.`in`.UrlCreator

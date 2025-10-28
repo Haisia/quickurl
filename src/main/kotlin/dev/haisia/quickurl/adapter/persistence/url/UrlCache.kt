@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.persistence
+package dev.haisia.quickurl.adapter.persistence.url
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash

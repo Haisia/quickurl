@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.webapi.dto
+package dev.haisia.quickurl.adapter.webapi
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpStatus
@@ -57,6 +57,11 @@ data class ApiResponse<T>(
 
     fun internalServerError(message: String): ResponseEntity<ApiResponse<ApiErrorData>> {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(of(ApiErrorData.of(message)))
+    }
+
+    fun unauthorized(message: String): ResponseEntity<ApiResponse<ApiErrorData>> {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .body(of(ApiErrorData.of(message)))
     }
 

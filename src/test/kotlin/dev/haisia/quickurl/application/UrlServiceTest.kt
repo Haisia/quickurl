@@ -2,6 +2,8 @@ package dev.haisia.quickurl.application
 
 import dev.haisia.quickurl.application.out.UrlCacheRepository
 import dev.haisia.quickurl.application.out.UrlRepository
+import dev.haisia.quickurl.application.url.ShortUrlNotFoundException
+import dev.haisia.quickurl.application.url.UrlService
 import dev.haisia.quickurl.domain.url.UrlEncoder
 import dev.haisia.quickurl.fixture.UrlFixture
 import io.mockk.*
