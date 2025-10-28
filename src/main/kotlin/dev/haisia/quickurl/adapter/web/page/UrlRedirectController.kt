@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.webapi.url
+package dev.haisia.quickurl.adapter.web.page
 
 import dev.haisia.quickurl.application.`in`.ClickLogger
 import dev.haisia.quickurl.application.`in`.UrlFinder

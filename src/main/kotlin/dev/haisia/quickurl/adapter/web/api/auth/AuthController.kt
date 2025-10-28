@@ -1,12 +1,12 @@
-package dev.haisia.quickurl.adapter.webapi.auth
+package dev.haisia.quickurl.adapter.web.api.auth
 
-import dev.haisia.quickurl.adapter.webapi.ApiResponse
-import dev.haisia.quickurl.adapter.webapi.auth.dto.CreateAccessTokenByRefreshTokenRequest
-import dev.haisia.quickurl.adapter.webapi.auth.dto.CreateAccessTokenByRefreshTokenResponse
-import dev.haisia.quickurl.adapter.webapi.auth.dto.UserLoginRequest
-import dev.haisia.quickurl.adapter.webapi.auth.dto.UserLoginResponse
-import dev.haisia.quickurl.adapter.webapi.auth.dto.UserRegisterRequest
-import dev.haisia.quickurl.adapter.webapi.auth.dto.UserRegisterResponse
+import dev.haisia.quickurl.adapter.web.api.ApiResponse
+import dev.haisia.quickurl.adapter.web.api.auth.dto.CreateAccessTokenByRefreshTokenRequest
+import dev.haisia.quickurl.adapter.web.api.auth.dto.CreateAccessTokenByRefreshTokenResponse
+import dev.haisia.quickurl.adapter.web.api.auth.dto.UserLoginRequest
+import dev.haisia.quickurl.adapter.web.api.auth.dto.UserLoginResponse
+import dev.haisia.quickurl.adapter.web.api.auth.dto.UserRegisterRequest
+import dev.haisia.quickurl.adapter.web.api.auth.dto.UserRegisterResponse
 import dev.haisia.quickurl.application.user.`in`.UserAuthorizer
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,7 +25,7 @@ class AuthController(
 
     val user = userAuthorizer.createUser(request.email, request.password)
 
-    return ApiResponse.created(UserRegisterResponse(user.id.toString(), user.email.value))
+    return ApiResponse.Companion.created(UserRegisterResponse(user.id.toString(), user.email.value))
   }
 
   @PostMapping("/login")
@@ -33,16 +33,18 @@ class AuthController(
 
     val (accessToken, refreshToken) = userAuthorizer.loginUser(request.email, request.password)
 
-    return ApiResponse.ok(UserLoginResponse(
-      accessToken = accessToken,
-      refreshToken = refreshToken
-    ))
+    return ApiResponse.Companion.ok(
+      UserLoginResponse(
+        accessToken = accessToken,
+        refreshToken = refreshToken
+      )
+    )
   }
 
   @PostMapping("/accesstoken")
   fun createAccessTokenByRefreshToken(@RequestBody request: CreateAccessTokenByRefreshTokenRequest): ResponseEntity<ApiResponse<CreateAccessTokenByRefreshTokenResponse>> {
     val accessToken = userAuthorizer.accessTokenRefresh(request.refreshToken)
 
-    return ApiResponse.ok(CreateAccessTokenByRefreshTokenResponse(accessToken))
+    return ApiResponse.Companion.ok(CreateAccessTokenByRefreshTokenResponse(accessToken))
   }
 }

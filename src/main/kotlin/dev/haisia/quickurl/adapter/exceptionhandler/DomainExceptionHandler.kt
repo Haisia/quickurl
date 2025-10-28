@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.adapter.exceptionhandler
 
-import dev.haisia.quickurl.adapter.webapi.ApiErrorData
-import dev.haisia.quickurl.adapter.webapi.ApiResponse
+import dev.haisia.quickurl.adapter.web.api.ApiErrorData
+import dev.haisia.quickurl.adapter.web.api.ApiResponse
 import dev.haisia.quickurl.domain.DomainException
 import dev.haisia.quickurl.domain.url.ShortKeyGenerationException
 import dev.haisia.quickurl.domain.url.ShortKeyNotGeneratedException
