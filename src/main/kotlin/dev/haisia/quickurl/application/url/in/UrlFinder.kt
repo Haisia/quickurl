@@ -5,6 +5,5 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface UrlFinder {
-  fun findOriginalUrl(shortKey: String): String
   fun findMyUrls(pageable: Pageable): Page<UrlWithClickCountDto>
 }

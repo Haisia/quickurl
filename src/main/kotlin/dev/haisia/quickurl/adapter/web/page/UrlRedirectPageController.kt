@@ -1,7 +1,7 @@
 package dev.haisia.quickurl.adapter.web.page
 
-import dev.haisia.quickurl.application.url.`in`.UrlClickLogger
-import dev.haisia.quickurl.application.url.`in`.UrlFinder
+import dev.haisia.quickurl.application.url.dto.UrlClickDto
+import dev.haisia.quickurl.application.url.`in`.UrlClicker
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
@@ -13,8 +13,7 @@ import java.net.URI
 
 @Controller
 class UrlRedirectPageController(
-  private val urlFinder: UrlFinder,
-  private val urlClickLogger: UrlClickLogger,
+  private val urlClicker: UrlClicker,
 ) {
 
   @GetMapping("/{shortKey}")
@@ -22,19 +21,19 @@ class UrlRedirectPageController(
     @PathVariable shortKey: String,
     request: HttpServletRequest
   ): ResponseEntity<Unit> {
-    val url = urlFinder.findOriginalUrl(shortKey)
 
-    /* 비동기로 로그 수집 */
-    urlClickLogger.logClickAsync(
-      shortKey = shortKey,
-      ipAddress = request.remoteAddr,
-      userAgent = request.getHeader("User-Agent"),
-      referer = request.getHeader("Referer")
+    val originalUrl = urlClicker.click(
+      UrlClickDto(
+        shortKey = shortKey,
+        ipAddress = request.remoteAddr,
+        userAgent = request.getHeader("User-Agent"),
+        referer = request.getHeader("Referer")
+      )
     )
 
     return ResponseEntity
       .status(HttpStatus.FOUND)
-      .location(URI.create(url))
+      .location(URI.create(originalUrl))
       .cacheControl(CacheControl.noStore())
       .build()
   }

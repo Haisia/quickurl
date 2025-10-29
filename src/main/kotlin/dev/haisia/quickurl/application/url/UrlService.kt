@@ -1,8 +1,10 @@
 package dev.haisia.quickurl.application.url
 
 import dev.haisia.quickurl.application.shared.out.AuthenticationContext
+import dev.haisia.quickurl.application.url.dto.UrlClickDto
 import dev.haisia.quickurl.application.url.dto.UrlWithClickCountDto
 import dev.haisia.quickurl.application.url.`in`.UrlCleaner
+import dev.haisia.quickurl.application.url.`in`.UrlClicker
 import dev.haisia.quickurl.application.url.`in`.UrlCreator
 import dev.haisia.quickurl.application.url.`in`.UrlFinder
 import dev.haisia.quickurl.application.url.out.UrlCacheRepository
@@ -28,7 +30,7 @@ class UrlService(
   private val authenticationContext: AuthenticationContext,
   private val userRepository: UserRepository,
   private val eventPublisher: ApplicationEventPublisher,
-) : UrlCreator, UrlFinder, UrlCleaner {
+) : UrlCreator, UrlFinder, UrlCleaner, UrlClicker {
   companion object {
     private val log = LoggerFactory.getLogger(UrlService::class.java)
   }
@@ -43,27 +45,17 @@ class UrlService(
     val userIdOrNull = authenticationContext.getCurrentUserIdAllowNull()
 
     val url = urlRepository.findByOriginalUrlAndCreatedBy(originalUrl, userIdOrNull?.toString() ?: "anonymous")
-      ?: urlRepository.save(Url.of(originalUrl = originalUrl, createdBy = userIdOrNull))
+      ?: run {
+        val saved = urlRepository.save(Url.of(originalUrl = originalUrl, createdBy = userIdOrNull))
+        eventPublisher.publishEvent(UrlEvent.UrlCreated(saved.getIdOrThrow()))
+        saved
+      }
 
     if (!url.hasShortKey()) {
       url.generateShortKey(urlEncoder)
     }
 
     return url.getShortKeyOrThrow()
-  }
-
-  override fun findOriginalUrl(shortKey: String): String {
-    val cachedUrl = urlCacheRepository.get(shortKey)
-    if (cachedUrl != null) {
-      return cachedUrl
-    }
-
-    val url = urlRepository.findByShortKey(shortKey) ?: throw ShortUrlNotFoundException("URL not found for key: $shortKey")
-    url.click()
-
-    urlCacheRepository.set(shortKey, url.originalUrl)
-
-    return url.originalUrl
   }
 
   override fun findMyUrls(pageable: Pageable): Page<UrlWithClickCountDto> {
@@ -95,5 +87,22 @@ class UrlService(
 
     log.info("Deleted URL for key: {}", shortKey)
     eventPublisher.publishEvent(UrlEvent.UrlDeleted(shortKey))
+  }
+
+  override fun click(urlClickDto : UrlClickDto): String {
+    val cachedUrl = urlCacheRepository.get(urlClickDto.shortKey)
+    if (cachedUrl != null) {
+      eventPublisher.publishEvent(UrlEvent.UrlClicked(urlClickDto))
+      return cachedUrl
+    }
+
+    val url = urlRepository.findByShortKey(urlClickDto.shortKey)
+      ?: throw ShortUrlNotFoundException("URL not found for key: ${urlClickDto.shortKey}")
+
+    urlCacheRepository.set(urlClickDto.shortKey, url.originalUrl)
+
+    eventPublisher.publishEvent(UrlEvent.UrlClicked(urlClickDto))
+
+    return url.originalUrl
   }
 }

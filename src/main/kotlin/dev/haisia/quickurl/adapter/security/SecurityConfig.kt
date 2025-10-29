@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.config
+package dev.haisia.quickurl.adapter.security
 
 import dev.haisia.quickurl.adapter.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
@@ -22,9 +22,9 @@ class SecurityConfig(
       .formLogin { it.disable() }
       .httpBasic { it.disable() }
       .sessionManagement {
-        it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
+        it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       }
-      
+
       .authorizeHttpRequests { auth ->
         auth
           // 정적 리소스 허용
@@ -49,7 +49,8 @@ class SecurityConfig(
             "/api/v1/auth/token/refresh",
             "/api/v1/shorten",
             "/api/v1/stats/**",
-            "/{shortUrl}"
+            "/{shortUrl}",
+            "/test/**"
           ).permitAll()
           .requestMatchers("/actuator/**").permitAll()
           .anyRequest().authenticated()

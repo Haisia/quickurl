@@ -9,6 +9,7 @@ import dev.haisia.quickurl.domain.Email
 import dev.haisia.quickurl.domain.Password
 import dev.haisia.quickurl.domain.PasswordEncoder
 import dev.haisia.quickurl.domain.user.User
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,14 +21,17 @@ class UserService(
   private val tokenProvider: TokenProvider,
   private val tokenResolver: TokenResolver,
   private val refreshTokenRepository: RefreshTokenRepository,
-): UserAuthorizer {
+  private val eventPublisher: ApplicationEventPublisher,
+) : UserAuthorizer {
 
   override fun createUser(email: Email, password: Password): User {
-    if(userRepository.existsByEmail(email)) {
+    if (userRepository.existsByEmail(email)) {
       throw EmailAlreadyRegisteredException()
     }
 
     val saved = userRepository.save(User.of(email = email, password = password, passwordEncoder = passwordEncoder))
+
+    eventPublisher.publishEvent(UserEvent.UserCreated(email))
 
     return saved
   }
@@ -50,7 +54,7 @@ class UserService(
     tokenResolver.validateAsRefreshToken(refreshToken)
 
     val userId = tokenResolver.getUserIdFromToken(refreshToken)
-    val foundUser = userRepository.findById(userId).orElseThrow {UserNotFoundException()}
+    val foundUser = userRepository.findById(userId).orElseThrow { UserNotFoundException() }
 
     refreshTokenRepository.increaseIssueCount(refreshToken)
 
