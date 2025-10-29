@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import java.net.URI
-import java.util.concurrent.TimeUnit
 
 @Controller
 class UrlRedirectPageController(
