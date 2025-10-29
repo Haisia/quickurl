@@ -1,4 +1,4 @@
-package dev.haisia.quickurl.adapter.web.api
+package dev.haisia.quickurl.adapter.serializer
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext

@@ -2,7 +2,7 @@ package dev.haisia.quickurl.adapter.web.api.url
 
 import dev.haisia.quickurl.adapter.web.api.ApiResponse
 import dev.haisia.quickurl.adapter.web.api.url.dto.ClickStatsResponse
-import dev.haisia.quickurl.adapter.web.api.url.dto.GetUrlClickStatisticsResponse
+import dev.haisia.quickurl.adapter.web.api.url.dto.GetUrlClickStatsResponse
 import dev.haisia.quickurl.application.url.UrlClickLogService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,11 +28,11 @@ class ClickLogController(
     )
   }
 
-  @GetMapping("/statistics/global")
-  fun getGlobalStats(): ResponseEntity<ApiResponse<GetUrlClickStatisticsResponse>> {
+  @GetMapping("/stats/global")
+  fun getGlobalStats(): ResponseEntity<ApiResponse<GetUrlClickStatsResponse>> {
     val (daily, cumulative) = urlClickLogService.getGlobalClickStats()
     return ApiResponse.ok(
-      GetUrlClickStatisticsResponse(
+      GetUrlClickStatsResponse(
         dailyClickCount = daily,
         cumulativeClickCount = cumulative
       )
