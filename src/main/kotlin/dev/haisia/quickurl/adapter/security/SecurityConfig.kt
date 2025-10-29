@@ -24,6 +24,17 @@ class SecurityConfig(
       .sessionManagement {
         it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       }
+      .exceptionHandling { exceptions ->
+        exceptions
+          .authenticationEntryPoint { request, response, _ ->
+            // 인증되지 않은 사용자가 보호된 페이지 접근 시 로그인 페이지로 리다이렉트
+            if (request.requestURI.startsWith("/urls/")) {
+              response.sendRedirect("/login?returnUrl=${request.requestURI}")
+            } else {
+              response.sendError(401, "Unauthorized")
+            }
+          }
+      }
 
       .authorizeHttpRequests { auth ->
         auth
