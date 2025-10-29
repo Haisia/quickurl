@@ -3,7 +3,7 @@
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id BINARY(16) PRIMARY KEY,
+    id char(36) PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
     INDEX idx_email (email)
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS url_click_logs (
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     token VARCHAR(500) NOT NULL UNIQUE,
-    user_id BINARY(16) NOT NULL,
+    user_id char(36) NOT NULL,
     issue_count BIGINT NOT NULL DEFAULT 0,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME(6) NOT NULL,
