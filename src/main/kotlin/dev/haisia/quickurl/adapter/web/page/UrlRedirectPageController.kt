@@ -13,7 +13,7 @@ import java.net.URI
 import java.util.concurrent.TimeUnit
 
 @Controller
-class UrlRedirectController(
+class UrlRedirectPageController(
   private val urlFinder: UrlFinder,
   private val urlClickLogger: UrlClickLogger,
 ) {
