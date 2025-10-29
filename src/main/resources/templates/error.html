@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오류 발생 - QuickURL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full">
+      <!-- Error Card -->
+      <div class="bg-white rounded-xl shadow-lg p-8 md:p-12">
+        <div class="text-center mb-8">
+          <!-- Error Icon -->
+          <div class="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-6">
+            <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          
+          <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+            오류가 발생했습니다
+          </h1>
+          <p class="text-lg text-gray-600 mb-2">
+            요청하신 페이지를 처리하는 중에 문제가 발생했습니다.
+          </p>
+        </div>
+
+        <!-- Error Details -->
+        <div class="bg-slate-50 rounded-lg p-6 mb-8 border-2 border-slate-200">
+          <div class="space-y-3">
+            <div class="flex items-start">
+              <span class="text-sm font-semibold text-slate-700 w-28">상태 코드:</span>
+              <span id="errorStatus" class="text-sm text-slate-900 font-mono">-</span>
+            </div>
+            <div class="flex items-start">
+              <span class="text-sm font-semibold text-slate-700 w-28">오류 메시지:</span>
+              <span id="errorMessage" class="text-sm text-slate-900">알 수 없는 오류가 발생했습니다.</span>
+            </div>
+            <div class="flex items-start">
+              <span class="text-sm font-semibold text-slate-700 w-28">요청 경로:</span>
+              <span id="errorPath" class="text-sm text-slate-900 break-all font-mono">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Common Error Types -->
+        <div class="bg-blue-50 rounded-lg p-6 mb-8 border border-blue-200">
+          <h3 class="text-lg font-bold text-blue-900 mb-3">💡 일반적인 오류 원인</h3>
+          <ul class="space-y-2 text-sm text-gray-700">
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">•</span>
+              <span><strong>401/403:</strong> 로그인이 필요하거나 접근 권한이 없습니다</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">•</span>
+              <span><strong>404:</strong> 요청하신 페이지를 찾을 수 없습니다</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">•</span>
+              <span><strong>500:</strong> 서버 내부 오류가 발생했습니다</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+          <button 
+            onclick="history.back()"
+            class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-lg font-semibold transition-colors shadow-md"
+          >
+            ← 이전 페이지로 돌아가기
+          </button>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <a 
+              href="/"
+              class="text-center bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-lg font-medium transition-colors border-2 border-slate-300"
+            >
+              🏠 메인으로
+            </a>
+            <a 
+              href="/login"
+              class="text-center bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-lg font-medium transition-colors border-2 border-slate-300"
+            >
+              🔐 로그인
+            </a>
+          </div>
+        </div>
+
+        <!-- Support Info -->
+        <div class="mt-8 pt-6 border-t border-gray-200 text-center">
+          <p class="text-sm text-gray-600">
+            문제가 계속되면 페이지를 새로고침하거나 잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // URL 파라미터에서 에러 정보 가져오기
+      window.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const message = urlParams.get('message');
+        const path = urlParams.get('path');
+
+        // Thymeleaf 서버 사이드 렌더링을 위한 기본값 체크
+        const errorStatus = document.getElementById('errorStatus');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorPath = document.getElementById('errorPath');
+
+        if (status && errorStatus.textContent === '-') {
+          errorStatus.textContent = status;
+        }
+        
+        if (message && errorMessage.textContent === '알 수 없는 오류가 발생했습니다.') {
+          errorMessage.textContent = decodeURIComponent(message);
+        }
+        
+        if (path && errorPath.textContent === '-') {
+          errorPath.textContent = decodeURIComponent(path);
+        }
+
+        // 상태 코드별 추가 안내 메시지
+        if (status === '401' || status === '403') {
+          const loginBtn = document.querySelector('[href="/login"]');
+          if (loginBtn) {
+            loginBtn.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

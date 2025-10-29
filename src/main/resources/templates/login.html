@@ -73,6 +73,10 @@
     </div>
 
     <script>
+      // URL에서 returnUrl 파라미터 가져오기
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnUrl = urlParams.get('returnUrl') || '/';
+
       document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -104,8 +108,8 @@
 
           if (response.ok) {
             // 쿠키에 자동으로 저장되므로 별도 저장 불필요
-            // 메인 페이지로 이동
-            window.location.href = '/';
+            // returnUrl이 있으면 해당 페이지로, 없으면 메인 페이지로 이동
+            window.location.href = returnUrl;
           } else {
             messageDiv.textContent = '❌ ' + (data.message || '로그인에 실패했습니다.');
             messageDiv.classList.remove('hidden');

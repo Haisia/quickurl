@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: quickurl
+  docker.compose.lifecycle-management: start_only
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://mariadb:3306/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      timeout: 2000ms
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000  # 60초
+      cache-null-values: false
+    cache-names:
+      - urlCache
+
+logging:
+  level:
+    dev.haisia.quickurl: INFO
+    org.springframework.scheduling: INFO
+
+# Rate Limit 설정
+rate-limit:
+  enabled: true
+  request-limit: 10  # 기간당 최대 요청 수
+  refill-duration-seconds: 1  # 리필 기간 (초)
+  excluded-paths:
+    - /favicon.ico
+    - /actuator
+    - /error
+jwt:
+  secret: ${JWT_SECRET}
+  access-token:
+    validity-second: 3600
+  refresh-token:
+    validity-second: 86400
+
+# Cookie 설정
+app:
+  cookie:
+    secure: true
+    domain: quickurl.haisia.dev
+    same-site: Strict
+    access-token-max-age: 3600
+    refresh-token-max-age: 604800
+
+brevo:
+  api-key: ${SMTP_BREVO_API_KEY}
+  api-base-url: ${SMTP_BREVO_BASE_URL}
