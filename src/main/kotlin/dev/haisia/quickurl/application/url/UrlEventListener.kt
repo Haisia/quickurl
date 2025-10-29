@@ -31,11 +31,10 @@ class UrlEventListener(
   @Async
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   fun handleUrlCreated(event: UrlEvent.UrlCreated) {
-    val url = urlRepository.findById(event.urlId).getOrNull() ?: throw UrlNotFoundException()
+    val url = urlRepository.findById(event.urlId).getOrNull() ?: return
 
     if(url.createdBy != "anonymous") {
-      val user = userRepository.findById(UUID.fromString(url.createdBy)).getOrNull()
-        ?: throw UserNotFoundException()
+      val user = userRepository.findById(UUID.fromString(url.createdBy)).getOrNull() ?: return
 
       mailSender.sendUrlCreated(
         recipientEmail = user.email.value,
