@@ -34,9 +34,9 @@ class UrlRedirectPageController(
     )
 
     return ResponseEntity
-      .status(HttpStatus.MOVED_PERMANENTLY)
+      .status(HttpStatus.FOUND)
       .location(URI.create(url))
-      .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+      .cacheControl(CacheControl.noStore())
       .build()
   }
 }
