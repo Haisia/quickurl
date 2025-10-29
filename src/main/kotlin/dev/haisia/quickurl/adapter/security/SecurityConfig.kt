@@ -27,11 +27,38 @@ class SecurityConfig(
       .exceptionHandling { exceptions ->
         exceptions
           .authenticationEntryPoint { request, response, _ ->
-            // 인증되지 않은 사용자가 보호된 페이지 접근 시 로그인 페이지로 리다이렉트
-            if (request.requestURI.startsWith("/urls/")) {
-              response.sendRedirect("/login?returnUrl=${request.requestURI}")
-            } else {
+            val requestURI = request.requestURI
+            
+            // API 요청인 경우 JSON 에러 응답
+            if (requestURI.startsWith("/api/")) {
               response.sendError(401, "Unauthorized")
+            }
+            // 페이지 요청인 경우
+            else if (requestURI.startsWith("/urls/")) {
+              // URL 관리 페이지 접근 시 로그인 페이지로 리다이렉트
+              response.sendRedirect("/login?returnUrl=${requestURI}")
+            }
+            else {
+              // 그 외의 경우 에러 페이지로 포워드
+              request.setAttribute("jakarta.servlet.error.status_code", 401)
+              request.setAttribute("jakarta.servlet.error.message", "인증이 필요합니다.")
+              request.setAttribute("jakarta.servlet.error.request_uri", requestURI)
+              request.getRequestDispatcher("/error").forward(request, response)
+            }
+          }
+          .accessDeniedHandler { request, response, _ ->
+            val requestURI = request.requestURI
+            
+            // API 요청인 경우 JSON 에러 응답
+            if (requestURI.startsWith("/api/")) {
+              response.sendError(403, "Forbidden")
+            }
+            // 페이지 요청인 경우 에러 페이지로 포워드
+            else {
+              request.setAttribute("jakarta.servlet.error.status_code", 403)
+              request.setAttribute("jakarta.servlet.error.message", "접근 권한이 없습니다.")
+              request.setAttribute("jakarta.servlet.error.request_uri", requestURI)
+              request.getRequestDispatcher("/error").forward(request, response)
             }
           }
       }
@@ -49,7 +76,8 @@ class SecurityConfig(
           .requestMatchers(
             "/",
             "/register",
-            "/login"
+            "/login",
+            "/error"  // 에러 페이지 허용
           ).permitAll()
           // 공개 API 허용
           .requestMatchers(
