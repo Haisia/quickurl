@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - develop
+      - master
   pull_request:
     branches:
       - main
-      - develop
+      - master
 
 env:
   REGISTRY: ghcr.io
@@ -91,7 +91,7 @@ jobs:
   deploy:
     needs: build-docker-image
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
       - name: Checkout code
@@ -102,7 +102,7 @@ jobs:
           cat << EOF > .env
           REGISTRY=${{ env.REGISTRY }}
           IMAGE_NAME=${{ env.IMAGE_NAME }}
-          IMAGE_TAG=main-${{ github.sha }}
+          IMAGE_TAG=${{ github.ref == 'refs/heads/master' && format('master-{0}', github.sha) || format('main-{0}', github.sha) }}
           DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
           DB_NAME=${{ secrets.DB_NAME }}
           DB_USERNAME=${{ secrets.DB_USERNAME }}
