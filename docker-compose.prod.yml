@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   app:
-    image: ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-haisia/quickurl}:${IMAGE_TAG:-latest}
     container_name: quickurl-app
     ports:
       - "8080:8080"
