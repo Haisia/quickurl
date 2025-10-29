@@ -1,7 +1,6 @@
 package dev.haisia.quickurl.adapter.persistence.urlclickstatistics
 
 import dev.haisia.quickurl.application.url.out.UrlClickStatisticsRepository
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -15,7 +14,6 @@ class UrlClickStatisticsRepositoryImpl(
   private val cumulativeRepository: CumulativeClickCountJpaRepository,
   private val dailyRepository: DailyClickCountJpaRepository,
   private val stringRedisTemplate: StringRedisTemplate,
-  private val eventPublisher: ApplicationEventPublisher
 ): UrlClickStatisticsRepository {
 
   companion object {
@@ -27,13 +25,8 @@ class UrlClickStatisticsRepositoryImpl(
     val cumulativeCount = incrementCumulativeClicks(amount)
     val dailyCount = incrementDailyClicks(amount)
 
-    // 트랜잭션 커밋 후 비동기로 캐시 동기화
-    eventPublisher.publishEvent(
-      UrlClickStatisticsCacheSyncEvent.CumulativeClicksUpdated(cumulativeCount.cumulativeClicks)
-    )
-    eventPublisher.publishEvent(
-      UrlClickStatisticsCacheSyncEvent.DailyClicksUpdated(dailyCount.date, dailyCount.dailyClicks)
-    )
+    syncCacheCumulativeClicks(cumulativeCount)
+    syncCacheDailyClicks(dailyCount)
   }
 
   override fun getDailyClickCount(): Long {
@@ -85,5 +78,20 @@ class UrlClickStatisticsRepositoryImpl(
 
   private fun getDailyClicksKey(date: LocalDate = LocalDate.now()): String {
     return "$DAILY_CLICKS_KEY_PREFIX$date"
+  }
+
+  private fun syncCacheCumulativeClicks(entity: CumulativeClickCount) {
+    stringRedisTemplate.opsForValue().set(CUMULATIVE_CLICKS_KEY, entity.cumulativeClicks.toString())
+  }
+
+  private fun syncCacheDailyClicks(entity: DailyClickCount) {
+    val key = "${DAILY_CLICKS_KEY_PREFIX}${entity.date}"
+    stringRedisTemplate.opsForValue().set(key, entity.dailyClicks.toString())
+
+    // 자정까지 남은 시간을 TTL로 설정
+    val now = LocalDateTime.now()
+    val midnight = now.toLocalDate().plusDays(1).atStartOfDay()
+    val ttl = Duration.between(now, midnight)
+    stringRedisTemplate.expire(key, ttl)
   }
 }

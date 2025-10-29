@@ -58,3 +58,7 @@ app:
     same-site: Strict  # Strict 또는 Lax
     access-token-max-age: 3600      # 1시간 (초 단위)
     refresh-token-max-age: 604800   # 7일 (초 단위)
+
+brevo:
+  api-key: ${SMTP_BREVO_API_KEY}
+  api-base-url: ${SMTP_BREVO_BASE_URL}

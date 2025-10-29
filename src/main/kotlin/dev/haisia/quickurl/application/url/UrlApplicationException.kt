@@ -6,3 +6,7 @@ import org.springframework.http.HttpStatus
 class ShortUrlNotFoundException(
   message: String = "The requested short URL was not found.",
 ) : ApplicationException(message, HttpStatus.NOT_FOUND)
+
+class UrlNotFoundException(
+  message: String = "Url not found."
+) : ApplicationException(message, HttpStatus.NOT_FOUND)

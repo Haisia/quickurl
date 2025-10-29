@@ -27,16 +27,17 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
-  
-  // JWT 토큰 처리
   implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
   runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
   runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
-
-  developmentOnly("org.springframework.boot:spring-boot-docker-compose")
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+  developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
   testImplementation("com.h2database:h2")
   testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.domain.url
 
+import dev.haisia.quickurl.domain.IdNotGeneratedException
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
@@ -62,6 +63,8 @@ class Url private constructor(
 
     this.shortKey = urlEncoder.encode(id)
   }
+
+  fun getIdOrThrow(): Long = this.id ?: throw IdNotGeneratedException()
 
   fun getShortKeyOrThrow(): String = this.shortKey ?: throw ShortKeyNotGeneratedException()
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <!-- 헤더 -->
+    <div style="background-color: #1e293b; padding: 40px 20px; text-align: center;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">
+        ✨ URL이 생성되었습니다
+      </h1>
+      <p style="color: #cbd5e1; margin: 12px 0 0 0; font-size: 16px;">
+        단축 URL을 바로 사용하실 수 있습니다
+      </p>
+    </div>
+    
+    <!-- 본문 -->
+    <div style="padding: 40px 30px;">
+      <p style="color: #1e293b; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+        안녕하세요, <strong style="color: #1e293b;" th:text="${userName}">사용자</strong>님!
+      </p>
+      
+      <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 30px 0;">
+        새로운 단축 URL이 생성되었습니다.
+      </p>
+      
+      <!-- 단축 URL 박스 -->
+      <div style="background-color: #10b981; padding: 25px; border-radius: 8px; margin: 30px 0; text-align: center;">
+        <p style="color: #ffffff; margin: 0 0 12px 0; font-size: 14px; font-weight: 500; opacity: 0.9;">
+          단축 URL
+        </p>
+        <a th:href="${shortUrl}" 
+           style="color: #ffffff; font-size: 20px; font-weight: 700; text-decoration: none; word-break: break-all; display: block; background-color: rgba(255,255,255,0.2); padding: 16px; border-radius: 6px;"
+           th:text="${shortUrl}">
+          https://quickurl.haisia.dev/abc123
+        </a>
+        <p style="color: #ffffff; margin: 16px 0 0 0; font-size: 13px; opacity: 0.85;">
+          클릭하여 URL을 확인하세요
+        </p>
+      </div>
+      
+      <!-- 커스텀 별칭 (있을 경우에만 표시) -->
+      <p th:if="${customAlias}" style="color: #475569; font-size: 14px; margin: 10px 0; padding: 12px; background-color: #f8fafc; border-radius: 6px;">
+        <strong style="color: #1e293b;">커스텀 별칭:</strong> <span th:text="${customAlias}">my-link</span>
+      </p>
+      
+      <!-- 원본 URL -->
+      <div style="background-color: #f8fafc; padding: 20px; margin: 20px 0; border-radius: 8px; border: 1px solid #e2e8f0;">
+        <p style="color: #64748b; margin: 0 0 8px 0; font-size: 13px; font-weight: 600;">
+          원본 URL:
+        </p>
+        <p style="color: #1e293b; margin: 0; font-size: 14px; word-break: break-all; line-height: 1.5;" th:text="${originalUrl}">
+          https://example.com/long/url
+        </p>
+      </div>
+      
+      <!-- 만료 예정 (있을 경우에만 표시) -->
+      <div th:if="${expiresAt}" style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
+        <p style="color: #92400e; margin: 0; font-size: 14px;">
+          ⏰ <strong>만료 예정:</strong> <span th:text="${#temporals.format(expiresAt, 'yyyy년 MM월 dd일 HH:mm')}">2025년 01월 01일 12:00</span>
+        </p>
+      </div>
+      
+      <!-- 기능 안내 -->
+      <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 20px; margin: 30px 0; border-radius: 4px;">
+        <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">💡 알아두세요</h3>
+        <ul style="color: #475569; margin: 0; padding-left: 20px; line-height: 1.8; font-size: 14px;">
+          <li>대시보드에서 URL 통계를 확인할 수 있습니다</li>
+          <li>QR 코드가 자동으로 생성되었습니다</li>
+          <li>URL 관리 페이지에서 수정 및 삭제가 가능합니다</li>
+        </ul>
+      </div>
+      
+      <div style="text-align: center; margin: 40px 0;">
+        <a href="https://quickurl.haisia.dev/urls/my" 
+           style="display: inline-block; background-color: #1e293b; color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(30, 41, 59, 0.3);">
+          내 URL 관리
+        </a>
+      </div>
+      
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin: 30px 0 0 0;">
+        항상 Quickurl을 이용해 주셔서 감사합니다! 😊
+      </p>
+    </div>
+    
+    <!-- 푸터 -->
+    <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+      <p style="color: #94a3b8; font-size: 12px; margin: 0; line-height: 1.6;">
+        본 메일은 발신전용입니다. 문의사항은 웹사이트를 이용해주세요.<br>
+        © 2025 Quickurl. All rights reserved.
+      </p>
+      <p style="margin: 15px 0 0 0;">
+        <a href="https://quickurl.haisia.dev" style="color: #1e293b; text-decoration: none; font-size: 13px; font-weight: 500;">
+          quickurl.haisia.dev
+        </a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
