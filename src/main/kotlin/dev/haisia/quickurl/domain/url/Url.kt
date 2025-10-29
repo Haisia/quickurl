@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.domain.url
 
+import dev.haisia.quickurl.adapter.persistence.converter.OriginalUrlConverter
 import dev.haisia.quickurl.domain.IdNotGeneratedException
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
@@ -23,7 +24,8 @@ class Url private constructor(
   var shortKey: String? = null,
 
   @Column(name = "original_url", nullable = false)
-  val originalUrl: String,
+  @Convert(converter = OriginalUrlConverter::class)
+  val originalUrl: OriginalUrl,
 
   /* userId: UUID
   * 익명사용자를 고려하여 UUID 가 아닌 String 타입으로 정의 함
@@ -40,7 +42,7 @@ class Url private constructor(
 ) {
   companion object {
     fun of(
-      originalUrl: String,
+      originalUrl: OriginalUrl,
       createdBy: UUID? = null
     ): Url {
       val strCreatedBy = createdBy?.toString() ?: "anonymous"
@@ -51,7 +53,7 @@ class Url private constructor(
       )
     }
   }
-
+  
   fun click() {
     this.lastUsedAt = LocalDateTime.now()
   }

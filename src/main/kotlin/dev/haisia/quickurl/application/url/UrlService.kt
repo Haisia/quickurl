@@ -11,6 +11,7 @@ import dev.haisia.quickurl.application.url.out.UrlCacheRepository
 import dev.haisia.quickurl.application.url.out.UrlRepository
 import dev.haisia.quickurl.application.user.UserNotFoundException
 import dev.haisia.quickurl.application.user.out.UserRepository
+import dev.haisia.quickurl.domain.url.OriginalUrl
 import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.url.UrlEncoder
 import org.slf4j.LoggerFactory
@@ -35,13 +36,13 @@ class UrlService(
     private val log = LoggerFactory.getLogger(UrlService::class.java)
   }
 
-  override fun createShortKey(originalUrl: String): String {
+  override fun createShortKey(originalUrl: OriginalUrl): String {
     val shortKey = createOrGetShortKey(originalUrl)
     urlCacheRepository.set(shortKey, originalUrl)
     return shortKey
   }
 
-  private fun createOrGetShortKey(originalUrl: String): String {
+  private fun createOrGetShortKey(originalUrl: OriginalUrl): String {
     val userIdOrNull = authenticationContext.getCurrentUserIdAllowNull()
 
     val url = urlRepository.findByOriginalUrlAndCreatedBy(originalUrl, userIdOrNull?.toString() ?: "anonymous")
@@ -89,11 +90,11 @@ class UrlService(
     eventPublisher.publishEvent(UrlEvent.UrlDeleted(shortKey))
   }
 
-  override fun click(urlClickDto : UrlClickDto): String {
+  override fun click(urlClickDto : UrlClickDto): OriginalUrl {
     val cachedUrl = urlCacheRepository.get(urlClickDto.shortKey)
     if (cachedUrl != null) {
       eventPublisher.publishEvent(UrlEvent.UrlClicked(urlClickDto))
-      return cachedUrl
+      return OriginalUrl(cachedUrl)
     }
 
     val url = urlRepository.findByShortKey(urlClickDto.shortKey)

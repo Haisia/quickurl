@@ -4,7 +4,6 @@ import dev.haisia.quickurl.application.shared.out.EmailSender
 import dev.haisia.quickurl.application.url.out.UrlClickLogRepository
 import dev.haisia.quickurl.application.url.out.UrlClickStatisticsRepository
 import dev.haisia.quickurl.application.url.out.UrlRepository
-import dev.haisia.quickurl.application.user.UserNotFoundException
 import dev.haisia.quickurl.application.user.out.UserRepository
 import dev.haisia.quickurl.domain.url.UrlClickLog
 import org.springframework.data.redis.core.RedisTemplate

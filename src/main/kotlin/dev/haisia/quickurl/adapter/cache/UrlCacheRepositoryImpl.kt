@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.cache
 
 import dev.haisia.quickurl.application.url.out.UrlCacheRepository
+import dev.haisia.quickurl.domain.url.OriginalUrl
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 import java.util.concurrent.TimeUnit
@@ -19,10 +20,10 @@ class UrlCacheRepositoryImpl(
     return redisTemplate.opsForValue().get(KEY_PREFIX + shortKey)
   }
 
-  override fun set(shortKey: String, originalUrl: String) {
+  override fun set(shortKey: String, originalUrl: OriginalUrl) {
     redisTemplate.opsForValue().set(
       KEY_PREFIX + shortKey,
-      originalUrl,
+      originalUrl.value,
       TTL_HOURS,
       TimeUnit.HOURS
     )

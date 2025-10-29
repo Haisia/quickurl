@@ -9,3 +9,7 @@ class ShortKeyGenerationException(
 class ShortKeyNotGeneratedException(
   message: String = "Short key has not been generated yet. Call generateShortKey() first."
 ) : DomainException(message)
+
+class InvalidOriginalUrlException(
+  message: String
+) : DomainException(message)
