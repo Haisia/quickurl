@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.application.url.out
 
 import dev.haisia.quickurl.application.url.dto.UrlWithClickCountDto
+import dev.haisia.quickurl.domain.url.OriginalUrl
 import dev.haisia.quickurl.domain.url.Url
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
 
 interface UrlRepository: JpaRepository<Url, Long> {
-  fun findByOriginalUrlAndCreatedBy(originalUrl: String, createdBy: String): Url?
+  fun findByOriginalUrlAndCreatedBy(originalUrl: OriginalUrl, createdBy: String): Url?
   fun findByShortKey(shortKey: String): Url?
   fun deleteByLastUsedAtBefore(threshold: LocalDateTime): Int
 

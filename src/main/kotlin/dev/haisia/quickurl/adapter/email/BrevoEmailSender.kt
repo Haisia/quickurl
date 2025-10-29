@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.email
 
 import dev.haisia.quickurl.application.shared.out.EmailSender
+import dev.haisia.quickurl.domain.url.OriginalUrl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -55,14 +56,14 @@ class BrevoEmailSender(
     recipientEmail: String,
     recipientName: String,
     shortUrl: String,
-    originalUrl: String,
+    originalUrl: OriginalUrl,
     customAlias: String?,
     expiresAt: LocalDateTime
   ): Mono<String> {
     val content = emailTemplateHandler.renderUrlCreatedEmail(
       userName = recipientName,
       shortUrl = shortUrl,
-      originalUrl = originalUrl,
+      originalUrl = originalUrl.value,
       customAlias = customAlias,
       expiresAt = LocalDateTime.now().plusDays(90)
     )

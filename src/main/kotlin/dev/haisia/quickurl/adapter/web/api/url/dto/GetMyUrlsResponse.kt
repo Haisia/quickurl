@@ -23,7 +23,7 @@ data class GetMyUrlsResponse(
     fun from(dto: UrlWithClickCountDto): GetMyUrlsResponse {
       return GetMyUrlsResponse(
         shortKey = dto.shortKey,
-        originalUrl = dto.originalUrl,
+        originalUrl = dto.originalUrl.value,
         clickCount = dto.clickCount,
         createdAt = dto.createdAt.toString(),
         lastUsedAt = dto.lastUsedAt.toString()

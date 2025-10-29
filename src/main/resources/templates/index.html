@@ -61,6 +61,14 @@
               placeholder="https://example.com/very/long/url"
               class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all outline-none"
             />
+            <div class="mt-2 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p class="font-medium text-blue-900 mb-1">💡 입력 형식 안내</p>
+              <ul class="space-y-1 text-gray-700">
+                <li>• <span class="font-semibold">http://</span> 또는 <span class="font-semibold">https://</span>로 시작해야 합니다</li>
+                <li>• 올바른 예시: <code class="bg-white px-1.5 py-0.5 rounded text-xs">https://example.com</code></li>
+                <li>• 잘못된 예시: <code class="bg-white px-1.5 py-0.5 rounded text-xs line-through">www.example.com</code>, <code class="bg-white px-1.5 py-0.5 rounded text-xs line-through">example.com</code></li>
+              </ul>
+            </div>
           </div>
 
           <button 
@@ -206,7 +214,11 @@
                 return createShortUrl();
               }
             }
-            throw new Error('URL 생성에 실패했습니다.');
+            
+            // 에러 응답 파싱
+            const errorData = await response.json();
+            const errorMessage = errorData.data?.message || 'URL 생성에 실패했습니다.';
+            throw new Error(errorMessage);
           }
 
           const data = await response.json();

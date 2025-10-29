@@ -47,7 +47,7 @@ class SecurityConfig(
             "/api/v1/auth/logout",
             "/api/v1/auth/me",
             "/api/v1/auth/token/refresh",
-            "/api/v1/shorten",
+            "/api/v1/url/shorten/**",
             "/api/v1/stats/**",
             "/{shortUrl}",
             "/test/**"

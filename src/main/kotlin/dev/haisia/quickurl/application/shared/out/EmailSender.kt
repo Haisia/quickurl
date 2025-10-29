@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.application.shared.out
 
+import dev.haisia.quickurl.domain.url.OriginalUrl
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
@@ -17,7 +18,7 @@ interface EmailSender {
     recipientEmail: String,
     recipientName: String,
     shortUrl: String,
-    originalUrl: String,
+    originalUrl: OriginalUrl,
     customAlias: String? = null,
     expiresAt: LocalDateTime = LocalDateTime.now().plusDays(90)
   ): Mono<String>

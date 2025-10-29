@@ -33,7 +33,7 @@ class UrlRedirectPageController(
 
     return ResponseEntity
       .status(HttpStatus.FOUND)
-      .location(URI.create(originalUrl))
+      .location(URI.create(originalUrl.value))
       .cacheControl(CacheControl.noStore())
       .build()
   }
