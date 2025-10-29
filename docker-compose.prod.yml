@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  app:
+    image: ${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG:-latest}
+    container_name: quickurl-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - SMTP_BREVO_API_KEY=${SMTP_BREVO_API_KEY}
+      - SMTP_BREVO_BASE_URL=${SMTP_BREVO_BASE_URL}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - quickurl-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mariadb:
+    image: mariadb:11.4
+    container_name: quickurl-mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+      - MARIADB_USER=${DB_USERNAME}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - TZ=Asia/Seoul
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - quickurl-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: quickurl-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - quickurl-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+networks:
+  quickurl-network:
+    driver: bridge
+
+volumes:
+  mariadb-data:
+    driver: local
+  redis-data:
+    driver: local
