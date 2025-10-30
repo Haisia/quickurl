@@ -51,7 +51,7 @@ springdoc:
 
 # Rate Limit 설정
 rate-limit:
-  enabled: true
+  enabled: false
   request-limit: 10  # 기간당 최대 요청 수
   refill-duration-seconds: 1  # 리필 기간 (초)
   excluded-paths:
@@ -86,5 +86,5 @@ app:
       enabled: ${EMAIL_SEND_ENABLED:false}
 
 brevo:
-  api-key: ${SMTP_BREVO_API_KEY}
-  api-base-url: ${SMTP_BREVO_BASE_URL}
+  api-key: ${SMTP_BREVO_API_KEY:testApiKey}
+  api-base-url: ${SMTP_BREVO_BASE_URL:testBaseURL}
