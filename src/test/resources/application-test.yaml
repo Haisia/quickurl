@@ -24,3 +24,14 @@ logging:
 # 테스트 환경에서는 Rate Limit 비활성화
 rate-limit:
   enabled: false
+
+jwt:
+  secret: thisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkeythisisjwttokensecretkey
+  access-token:
+    validity-second: 3600
+  refresh-token:
+    validity-second: 86400
+
+brevo:
+  api-key: testapikey
+  api-base-url: testbaseurl

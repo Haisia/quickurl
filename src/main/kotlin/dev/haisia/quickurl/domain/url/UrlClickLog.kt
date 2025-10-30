@@ -21,13 +21,13 @@ class UrlClickLog private constructor(
   @Column(name = "short_key", nullable = false, length = 20)
   val shortKey: String,
 
-  @Column(name = "ip_address", length = 45)
+  @Column(name = "ip_address", length = 45, nullable = true)
   val ipAddress: String?,
 
-  @Column(name = "user_agent", length = 500)
+  @Column(name = "user_agent", length = 500, nullable = true)
   val userAgent: String?,
 
-  @Column(name = "referer", length = 500)
+  @Column(name = "referer", length = 500, nullable = true)
   val referer: String?,
 
   @Column(name = "clicked_at", nullable = false)
