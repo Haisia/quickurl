@@ -1,0 +1,267 @@
+{
+  "metrics": {
+    "iterations": {
+      "values": {
+        "rate": 64.34593966216386,
+        "count": 17597
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 1,
+        "min": 1,
+        "max": 1
+      }
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 20.8847043,
+        "avg": 17.5806225334963,
+        "min": 0,
+        "med": 15.798233,
+        "max": 1814.87012,
+        "p(90)": 18.8013648
+      }
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 9480740,
+        "rate": 34667.67767191359
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 1814.988822,
+        "p(90)": 19.0508886,
+        "p(95)": 21.15514939999999,
+        "avg": 17.83888214506506,
+        "min": 0.164801,
+        "med": 16.053559
+      },
+      "thresholds": {
+        "p(90)<500": {
+          "ok": true
+        },
+        "p(95)<1000": {
+          "ok": true
+        }
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 35195,
+        "fails": 0
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 17.83888214506506,
+        "min": 0.164801,
+        "med": 16.053559,
+        "max": 1814.988822,
+        "p(90)": 19.0508886,
+        "p(95)": 21.15514939999999
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "max": 0,
+        "p(90)": 0,
+        "p(95)": 0
+      }
+    },
+    "iteration_duration": {
+      "contains": "time",
+      "values": {
+        "p(90)": 19.3023256,
+        "p(95)": 21.377012000000004,
+        "avg": 17.033551899926152,
+        "min": 13.107091,
+        "med": 16.288994,
+        "max": 150.454915
+      },
+      "type": "trend"
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 0.003941,
+        "max": 6.640608,
+        "p(90)": 0.005344,
+        "p(95)": 0.006057599999999991,
+        "avg": 0.018670556736178096,
+        "min": 0.002313
+      }
+    },
+    "http_req_receiving": {
+      "contains": "time",
+      "values": {
+        "med": 0.20995,
+        "max": 2.769435,
+        "p(90)": 0.3462218,
+        "p(95)": 0.41751549999999976,
+        "avg": 0.2241151748963014,
+        "min": 0.057332
+      },
+      "type": "trend"
+    },
+    "url_creation_duration": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "max": 1815,
+        "p(90)": 19,
+        "p(95)": 21,
+        "avg": 15.375745865772576,
+        "min": -4486,
+        "med": 16
+      }
+    },
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 17599,
+        "rate": 64.35325294734453
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 1,
+        "min": 1,
+        "max": 1
+      }
+    },
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 5825469,
+        "rate": 21301.65805408911
+      }
+    },
+    "url_creation_count": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "rate": 64.34593966216386,
+        "count": 17597
+      }
+    },
+    "http_req_failed": {
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 17599
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 0,
+        "avg": 0.013055795613387119,
+        "min": 0,
+        "med": 0,
+        "max": 2.388561,
+        "p(90)": 0
+      }
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 0.050424399999999994,
+        "avg": 0.034144436672538185,
+        "min": 0.012057,
+        "med": 0.033061,
+        "max": 0.537725,
+        "p(90)": 0.044919400000000005
+      }
+    }
+  },
+  "setup_data": {
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzNzRiZmFmZi0wY2UwLTQyNTgtYWZjYy0yMjM0MTI4Y2MwYjQiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzYxODM5MTQ4LCJleHAiOjE3NjE4NDI3NDh9.lmvJ-kp3p8htij9WH2QDz8wLFsRgAc7yGgDKopJ0uOBhJ189R0mMiGCYiWlmZiE6eE1NaH81O8Anltuu56Hc4Q",
+    "baseUrl": "http://host.docker.internal:8080"
+  },
+  "root_group": {
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+      {
+        "name": "setup",
+        "path": "::setup",
+        "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+        "groups": [],
+        "checks": [
+            {
+              "name": "로그인 성공",
+              "path": "::setup::로그인 성공",
+              "id": "3d0a440225044c6f346cabe7a9b5a0d5",
+              "passes": 1,
+              "fails": 0
+            }
+          ]
+      }
+    ],
+    "checks": [
+      {
+        "fails": 0,
+        "name": "URL 생성 성공",
+        "path": "::URL 생성 성공",
+        "id": "a346889726c47bb25cc3c9dd5f360041",
+        "passes": 17597
+      },
+      {
+        "name": "응답 본문 존재",
+        "path": "::응답 본문 존재",
+        "id": "b5644335dac6d8379865a110bf2a3cc2",
+        "passes": 17597,
+        "fails": 0
+      }
+    ]
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  },
+  "state": {
+    "isStdOutTTY": false,
+    "isStdErrTTY": false,
+    "testRunDurationMs": 273474.909099
+  }
+}

@@ -16,6 +16,16 @@ interface UrlRepository: JpaRepository<Url, Long> {
   fun deleteByLastUsedAtBeforeAndExpiresAtIsNull(threshold: LocalDateTime): Int
   fun deleteByExpiresAtBefore(threshold: LocalDateTime): Int
 
+  @Modifying
+  @Query(
+    """
+      UPDATE Url u 
+      SET u.lastUsedAt = CURRENT_TIMESTAMP 
+      WHERE u.shortKey = :shortKey
+    """
+  )
+  fun updateLastUsedAt(shortKey: String): Int
+
   @Query(
     """
     select new dev.haisia.quickurl.application.url.dto.UrlWithClickCountDto(

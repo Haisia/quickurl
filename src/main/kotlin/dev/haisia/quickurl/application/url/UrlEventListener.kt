@@ -57,14 +57,8 @@ class UrlEventListener(
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   fun handleUrlClicked(event: UrlEvent.UrlClicked) {
     val dto = event.urlClickDto
-    val url = urlRepository.findByShortKey(dto.shortKey) ?: throw IllegalArgumentException()
 
-    /* UrlService에서 처리하면
-    * redis 캐시조회에 성공해도 entity 조회가 불가피해지기 때문에
-    * 이벤트에서 처리
-    * */
-    url.click()
-    urlRepository.save(url)
+    urlRepository.updateLastUsedAt(dto.shortKey)
 
     urlClickLogRepository.save(
       UrlClickLog.of(
