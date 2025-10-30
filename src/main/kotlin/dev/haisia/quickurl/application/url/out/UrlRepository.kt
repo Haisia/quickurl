@@ -13,7 +13,8 @@ import java.time.LocalDateTime
 interface UrlRepository: JpaRepository<Url, Long> {
   fun findByOriginalUrlAndCreatedBy(originalUrl: OriginalUrl, createdBy: String): Url?
   fun findByShortKey(shortKey: String): Url?
-  fun deleteByLastUsedAtBefore(threshold: LocalDateTime): Int
+  fun deleteByLastUsedAtBeforeAndExpiresAtIsNull(threshold: LocalDateTime): Int
+  fun deleteByExpiresAtBefore(threshold: LocalDateTime): Int
 
   @Query(
     """
@@ -24,12 +25,13 @@ interface UrlRepository: JpaRepository<Url, Long> {
       COALESCE(COUNT(cl.id), 0L), 
       u.createdBy,
       u.lastUsedAt, 
-      u.createdAt
+      u.createdAt,
+      u.expiresAt
     )
     from Url u 
     left join UrlClickLog cl ON cl.shortKey = u.shortKey
     where u.createdBy = :createdBy
-    group by u.id, u.shortKey, u.originalUrl, u.createdBy, u.lastUsedAt, u.createdAt
+    group by u.id, u.shortKey, u.originalUrl, u.createdBy, u.lastUsedAt, u.createdAt, u.expiresAt
     order by u.createdAt DESC
     """
   )

@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.domain.url
 
 import dev.haisia.quickurl.adapter.persistence.converter.OriginalUrlConverter
+import dev.haisia.quickurl.domain.Duration
 import dev.haisia.quickurl.domain.IdNotGeneratedException
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
@@ -37,20 +38,28 @@ class Url private constructor(
   @Column(name = "last_used_at", nullable = false)
   var lastUsedAt: LocalDateTime = LocalDateTime.now(),
 
+  /* null 일 경우 lastUsedAt 에 따라 스케쥴링에 의해 처리 됨 */
+  @Column(name = "expires_at", nullable = true)
+  var expiresAt: LocalDateTime? = null,
+
   @Column(name = "created_at", nullable = false)
   val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
   companion object {
     fun of(
       originalUrl: OriginalUrl,
+      expirationDuration: Duration = Duration.NONE,
       createdBy: UUID? = null
     ): Url {
       val strCreatedBy = createdBy?.toString() ?: "anonymous"
 
-      return Url(
+      val url = Url(
         originalUrl = originalUrl,
         createdBy = strCreatedBy
       )
+
+      expirationDuration.days?.let { url.expiresAt = LocalDateTime.now().plusDays(it.toLong()) }
+      return url
     }
   }
   

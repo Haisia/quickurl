@@ -17,7 +17,10 @@ data class GetMyUrlsResponse(
   val createdAt: String,
 
   @JsonProperty("last_used_at")
-  val lastUsedAt: String
+  val lastUsedAt: String,
+
+  @JsonProperty("expires_at")
+  val expiresAt: String? = null
 ) {
   companion object {
     fun from(dto: UrlWithClickCountDto): GetMyUrlsResponse {
@@ -26,7 +29,8 @@ data class GetMyUrlsResponse(
         originalUrl = dto.originalUrl.value,
         clickCount = dto.clickCount,
         createdAt = dto.createdAt.toString(),
-        lastUsedAt = dto.lastUsedAt.toString()
+        lastUsedAt = dto.lastUsedAt.toString(),
+        expiresAt = dto.expiresAt?.toString()
       )
     }
   }

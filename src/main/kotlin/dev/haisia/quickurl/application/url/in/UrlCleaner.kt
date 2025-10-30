@@ -8,5 +8,7 @@ interface UrlCleaner {
    */
   fun deleteUnusedUrls(thresholdMonths: Long = 3): Int
 
+  fun deleteExpiredUrls(): Int
+
   fun deleteMyUrl(shortKey: String)
 }

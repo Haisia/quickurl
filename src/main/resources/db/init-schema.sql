@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS urls (
     original_url TEXT NOT NULL,
     created_by VARCHAR(255) NOT NULL DEFAULT 'anonymous',
     last_used_at DATETIME(6) NOT NULL,
+    expires_at DATETIME(6) NOT NULL,
     created_at DATETIME(6) NOT NULL,
     CONSTRAINT uk_ourl_user UNIQUE (original_url(500), created_by),
     INDEX idx_short_key (short_key),

@@ -19,11 +19,23 @@ class UrlCleanupScheduler(
    */
   @Scheduled(cron = "0 0 2 * * *")
   fun cleanupUnusedUrls() {
-    log.info("Starting scheduled URL cleanup job")
+    log.info("Starting scheduled unused URL cleanup job")
     
     try {
       val deletedCount = urlCleaner.deleteUnusedUrls(thresholdMonths = 3)
-      log.info("Scheduled URL cleanup completed. Deleted {} URLs", deletedCount)
+      log.info("Scheduled unused URL cleanup completed. Deleted {} URLs", deletedCount)
+    } catch (e: Exception) {
+      log.error("Failed to execute scheduled URL cleanup", e)
+    }
+  }
+
+  @Scheduled(cron = "0 30 0 * * *")
+  fun cleanupExpiredUrls() {
+    log.info("Starting scheduled expired URL cleanup job")
+
+    try {
+      val deletedCount = urlCleaner.deleteExpiredUrls()
+      log.info("Scheduled expired URL cleanup completed. Deleted {} URLs", deletedCount)
     } catch (e: Exception) {
       log.error("Failed to execute scheduled URL cleanup", e)
     }
