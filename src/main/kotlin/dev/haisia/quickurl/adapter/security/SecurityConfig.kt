@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.security
 
 import dev.haisia.quickurl.adapter.filter.JwtAuthenticationFilter
+import dev.haisia.quickurl.adapter.filter.RefererCheckFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -12,7 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-  private val jwtAuthenticationFilter: JwtAuthenticationFilter
+  private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+  private val refererCheckFilter: RefererCheckFilter
 ) {
 
   @Bean
@@ -95,6 +97,10 @@ class SecurityConfig(
           .requestMatchers("/actuator/**").permitAll()
           .anyRequest().authenticated()
       }
+      .addFilterBefore(
+        refererCheckFilter,
+        UsernamePasswordAuthenticationFilter::class.java
+      )
       .addFilterBefore(
         jwtAuthenticationFilter,
         UsernamePasswordAuthenticationFilter::class.java

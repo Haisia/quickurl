@@ -73,6 +73,14 @@ app:
     same-site: Strict
     access-token-max-age: 3600
     refresh-token-max-age: 604800
+  security:
+    referer-check:
+      enabled: ${REFERER_CHECK_ENABLED:false}
+      allowed-domains:
+        - ${APP_BASE_URL:http://localhost:8080}
+      allow-subdomains: false
+      protected-paths:
+        - /api/v1
 
 brevo:
   api-key: ${SMTP_BREVO_API_KEY}
