@@ -86,5 +86,5 @@ app:
       enabled: ${EMAIL_SEND_ENABLED:false}
 
 brevo:
-  api-key: ${SMTP_BREVO_API_KEY}
-  api-base-url: ${SMTP_BREVO_BASE_URL}
+  api-key: ${SMTP_BREVO_API_KEY:testApiKey}
+  api-base-url: ${SMTP_BREVO_BASE_URL:testBaseURL}

@@ -20,11 +20,10 @@ class RefererCheckFilter(
   private val securityProperties: SecurityProperties
 ) : OncePerRequestFilter() {
   
-  private val log = LoggerFactory.getLogger(javaClass)
-  
   companion object {
     private const val REFERER_HEADER = "Referer"
     private const val ORIGIN_HEADER = "Origin"
+    private val log = LoggerFactory.getLogger(RefererCheckFilter::class.java)
   }
   
   override fun doFilterInternal(
