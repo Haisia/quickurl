@@ -63,3 +63,11 @@ app:
 brevo:
   api-key: ${SMTP_BREVO_API_KEY}
   api-base-url: ${SMTP_BREVO_BASE_URL}
+
+# 클릭 로그 ip 수집
+server:
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      remote-ip-header: X-Forwarded-For
+  forward-headers-strategy: framework

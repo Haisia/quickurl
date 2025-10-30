@@ -25,7 +25,7 @@ class UrlRedirectPageController(
     val originalUrl = urlClicker.click(
       UrlClickDto(
         shortKey = shortKey,
-        ipAddress = request.remoteAddr,
+        ipAddress = getClientIp(request),
         userAgent = request.getHeader("User-Agent"),
         referer = request.getHeader("Referer")
       )
@@ -36,5 +36,21 @@ class UrlRedirectPageController(
       .location(URI.create(originalUrl.value))
       .cacheControl(CacheControl.noStore())
       .build()
+  }
+
+  private fun getClientIp(request: HttpServletRequest): String {
+    // Cloudflare의 실제 클라이언트 IP 헤더 우선 (Nginx에서 CF-Connecting-IP로 전달)
+    request.getHeader("CF-Connecting-IP")?.takeIf { it.isNotBlank() }?.let { return it }
+    
+    // X-Real-IP 헤더 확인 (Nginx에서 설정)
+    request.getHeader("X-Real-IP")?.takeIf { it.isNotBlank() }?.let { return it }
+    
+    // X-Forwarded-For 헤더 확인 (첫 번째 IP가 실제 클라이언트 IP)
+    request.getHeader("X-Forwarded-For")?.takeIf { it.isNotBlank() }?.let {
+      return it.split(",").first().trim()
+    }
+    
+    // 마지막으로 remoteAddr 사용 (fallback)
+    return request.remoteAddr
   }
 }
