@@ -97,6 +97,31 @@
           </div>
         </div>
       </div>
+
+      <!-- QR Code Modal -->
+      <div id="qrModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-fadeIn">
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">🔲 QR 코드</h3>
+            <p class="text-sm text-gray-600" id="qrModalShortUrl"></p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6 mb-6 flex justify-center border-2 border-gray-200">
+            <img id="qrModalImage" src="" alt="QR Code" class="max-w-full h-auto"/>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="downloadQrCode()" 
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+              💾 다운로드
+            </button>
+            <button onclick="closeQrModal()" 
+                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script th:inline="javascript">
@@ -220,6 +245,10 @@
               <button onclick="window.open('${shortUrl}', '_blank')" 
                       class="flex-1 min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm">
                 🔗 열기
+              </button>
+              <button onclick="generateAndShowQrCode('${url.short_key}')" 
+                      class="flex-1 min-w-[120px] bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm">
+                🔲 QR 코드
               </button>
               <button onclick="openDeleteModal('${url.short_key}', '${shortUrl}', '${url.original_url.replace(/'/g, "\\'")}')" 
                       class="flex-1 min-w-[120px] bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm">
@@ -358,6 +387,101 @@
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeDeleteModal();
+          closeQrModal();
+        }
+      });
+
+      // QR 코드 모달 관련 함수
+      let currentQrShortKey = null;
+      let currentQrImageData = null;
+
+      async function generateAndShowQrCode(shortKey) {
+        const shortUrl = `${window.location.origin}/${shortKey}`;
+        currentQrShortKey = shortKey;
+
+        try {
+          // QR 코드 생성 요청
+          const response = await fetch(`/api/v1/url/qr-code?shortKey=${encodeURIComponent(shortKey)}&size=300`, {
+            credentials: 'include'
+          });
+
+          if (!response.ok) {
+            throw new Error('QR 코드 생성에 실패했습니다.');
+          }
+
+          const data = await response.json();
+          currentQrImageData = data.data.qr_code_image;
+          
+          // 모달에 QR 코드 표시
+          document.getElementById('qrModalShortUrl').textContent = shortUrl;
+          document.getElementById('qrModalImage').src = `data:image/png;base64,${currentQrImageData}`;
+          document.getElementById('qrModal').classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+
+        } catch (error) {
+          console.error('QR 코드 생성 실패:', error);
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+          toast.textContent = '❌ QR 코드 생성에 실패했습니다.';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
+        }
+      }
+
+      function closeQrModal() {
+        document.getElementById('qrModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        currentQrShortKey = null;
+        currentQrImageData = null;
+      }
+
+      function downloadQrCode() {
+        if (!currentQrImageData || !currentQrShortKey) return;
+
+        try {
+          // Base64를 Blob으로 변환
+          const byteCharacters = atob(currentQrImageData);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: 'image/png' });
+
+          // 다운로드 링크 생성
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = `qrcode-${currentQrShortKey}.png`;
+          document.body.appendChild(a);
+          a.click();
+          
+          // 정리
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+
+          // 성공 토스트
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+          toast.textContent = '✅ QR 코드가 다운로드되었습니다!';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
+
+        } catch (error) {
+          console.error('다운로드 실패:', error);
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+          toast.textContent = '❌ 다운로드에 실패했습니다.';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
+        }
+      }
+
+      // QR 모달 외부 클릭 시 닫기
+      document.getElementById('qrModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'qrModal') {
+          closeQrModal();
         }
       });
 

@@ -50,8 +50,8 @@ jwt:
   refresh-token:
     validity-second: 86400
 
-# Cookie 설정
 app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
   cookie:
     secure: false
     domain: null

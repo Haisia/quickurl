@@ -115,7 +115,15 @@
           <p class="text-sm text-gray-600 mb-2 font-medium">생성된 짧은 URL:</p>
           <div id="shortUrl" class="text-xl font-bold text-slate-800 break-all"></div>
         </div>
-        <div class="flex gap-3">
+        
+        <!-- QR Code Section -->
+        <div id="qrCodeSection" class="hidden mb-4">
+          <div class="bg-gray-50 rounded-lg p-4 border-2 border-gray-200 flex justify-center">
+            <img id="qrCodeImage" src="" alt="QR Code" class="max-w-full h-auto"/>
+          </div>
+        </div>
+        
+        <div class="flex gap-3 mb-3">
           <button 
             onclick="copyToClipboard()"
             class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium transition-colors"
@@ -123,12 +131,19 @@
             📋 복사하기
           </button>
           <button 
-            onclick="closeModal()"
-            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-medium transition-colors"
+            id="generateQrBtn"
+            onclick="generateQrCode()"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
           >
-            닫기
+            🔲 QR 생성
           </button>
         </div>
+        <button 
+          onclick="closeModal()"
+          class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-medium transition-colors"
+        >
+          닫기
+        </button>
       </div>
     </div>
 
@@ -307,6 +322,67 @@
 
       function closeModal() {
         document.getElementById('resultModal').classList.add('hidden');
+        // QR 코드 섹션 숨기기
+        document.getElementById('qrCodeSection').classList.add('hidden');
+        document.getElementById('qrCodeImage').src = '';
+        document.getElementById('generateQrBtn').textContent = '🔲 QR 생성';
+        document.getElementById('generateQrBtn').disabled = false;
+      }
+
+      async function generateQrCode() {
+        const shortUrlText = document.getElementById('shortUrl').textContent;
+        const shortKey = shortUrlText.split('/').pop();
+        const generateQrBtn = document.getElementById('generateQrBtn');
+        const qrCodeSection = document.getElementById('qrCodeSection');
+        const qrCodeImage = document.getElementById('qrCodeImage');
+
+        console.log('QR 코드 생성 시작:', shortKey);
+
+        generateQrBtn.disabled = true;
+        generateQrBtn.textContent = '생성 중...';
+
+        try {
+          const url = `/api/v1/url/qr-code?shortKey=${encodeURIComponent(shortKey)}&size=250`;
+          console.log('API 호출 URL:', url);
+          
+          const response = await fetch(url, {
+            credentials: 'include'
+          });
+
+          console.log('응답 상태:', response.status, response.statusText);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('에러 응답:', errorText);
+            throw new Error(`QR 코드 생성에 실패했습니다. (${response.status})`);
+          }
+
+          const data = await response.json();
+          console.log('응답 데이터:', data);
+          
+          // Base64 이미지 데이터를 표시
+          if (data.data && data.data.qr_code_image) {
+            qrCodeImage.src = `data:image/png;base64,${data.data.qr_code_image}`;
+            qrCodeSection.classList.remove('hidden');
+            generateQrBtn.textContent = '✅ 생성 완료';
+            console.log('QR 코드 표시 완료');
+          } else {
+            console.error('QR 코드 데이터 없음:', data);
+            throw new Error('QR 코드 데이터를 받지 못했습니다.');
+          }
+        } catch (error) {
+          console.error('QR 코드 생성 실패:', error);
+          
+          // 토스트 알림으로 변경
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+          toast.textContent = '❌ ' + error.message;
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+          
+          generateQrBtn.textContent = '🔲 QR 생성';
+          generateQrBtn.disabled = false;
+        }
       }
 
       // ESC 키로 모달 닫기
