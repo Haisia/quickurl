@@ -4,12 +4,6 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 
-/**
- * 테스트 전용 리플렉션 유틸리티
- * 
- * 주의: 이 유틸리티는 테스트 코드에서만 사용해야 합니다.
- * 프로덕션 코드에서는 절대 사용하지 마세요.
- */
 object TestReflectionUtils {
   
   /**

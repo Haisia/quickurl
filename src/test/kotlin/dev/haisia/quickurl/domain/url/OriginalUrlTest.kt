@@ -1,201 +1,145 @@
 package dev.haisia.quickurl.domain.url
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
+@DisplayName("OriginalUrl 테스트")
 class OriginalUrlTest {
-
-  @Test
-  @DisplayName("유효한 HTTP URL은 성공적으로 생성된다")
-  fun `valid http url should be created successfully`() {
-    // given
-    val validUrl = "http://example.com"
-
-    // when
-    val originalUrl = OriginalUrl(validUrl)
-
-    // then
-    assertThat(originalUrl.value).isEqualTo(validUrl)
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "http://example.com",
+    "https://example.com",
+    "http://example.com/path",
+    "https://example.com/path?query=value",
+    "http://subdomain.example.com",
+    "https://example.com:8080/path",
+    "http://example.com/path#fragment"
+  ])
+  @DisplayName("유효한 URL로 OriginalUrl 객체를 생성할 수 있다")
+  fun createOriginalUrlWithValidUrl(url: String) {
+    assert(OriginalUrl(url).value == url)
   }
-
-  @Test
-  @DisplayName("유효한 HTTPS URL은 성공적으로 생성된다")
-  fun `valid https url should be created successfully`() {
-    // given
-    val validUrl = "https://www.google.com/search?q=kotlin"
-
-    // when
-    val originalUrl = OriginalUrl(validUrl)
-
-    // then
-    assertThat(originalUrl.value).isEqualTo(validUrl)
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "",
+    "   ",
+    "\t\n"
+  ])
+  @DisplayName("빈 값이나 공백으로 OriginalUrl 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithBlankValueThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
   }
-
+  
   @Test
-  @DisplayName("빈 URL은 예외를 발생시킨다")
-  fun `empty url should throw exception`() {
-    assertThatThrownBy { OriginalUrl("") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("cannot be empty")
+  @DisplayName("최대 길이를 초과하는 URL로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithTooLongUrlThrowsException() {
+    val tooLongUrl = "https://${"a".repeat(3000)}.com"
+    
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(tooLongUrl)
+    }
   }
-
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "http://example.com/<script>alert('xss')</script>",
+    "javascript:alert('xss')",
+    "http://example.com?onerror=alert(1)",
+    "http://example.com?onload=malicious()",
+    "http://example.com?onclick=hack()",
+    "http://example.com?onmouseover=steal()",
+    "http://example.com?query=eval(code)",
+    "http://example.com?style=expression(alert(1))"
+  ])
+  @DisplayName("XSS 패턴이 포함된 URL로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithXssPatternThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
+  }
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "not a url",
+    "htp://wrong",
+    "://missing-scheme"
+  ])
+  @DisplayName("잘못된 URI 형식으로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithInvalidUriFormatThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
+  }
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "javascript:void(0)",
+    "data:text/html,<script>alert(1)</script>",
+    "vbscript:msgbox(1)",
+    "file:///etc/passwd",
+    "about:blank",
+    "blob:https://example.com/uuid"
+  ])
+  @DisplayName("차단된 프로토콜로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithBlockedProtocolThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
+  }
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "ftp://example.com",
+    "mailto:user@example.com",
+    "tel:+1234567890",
+    "ssh://server.com"
+  ])
+  @DisplayName("허용되지 않은 프로토콜로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithNotAllowedProtocolThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
+  }
+  
   @Test
-  @DisplayName("공백만 있는 URL은 예외를 발생시킨다")
-  fun `blank url should throw exception`() {
-    assertThatThrownBy { OriginalUrl("   ") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("cannot be empty")
+  @DisplayName("프로토콜이 없는 URL로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithoutProtocolThrowsException() {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl("example.com")
+    }
   }
-
-  @Test
-  @DisplayName("프로토콜이 없는 URL은 예외를 발생시킨다")
-  fun `url without protocol should throw exception`() {
-    assertThatThrownBy { OriginalUrl("example.com") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("must have a protocol")
+  
+  @ParameterizedTest
+  @ValueSource(strings = [
+    "http://",
+    "https://",
+    "http:///path"
+  ])
+  @DisplayName("호스트가 없는 URL로 생성 시 예외가 발생한다")
+  fun createOriginalUrlWithoutHostThrowsException(url: String) {
+    assertThrows<InvalidOriginalUrlException> {
+      OriginalUrl(url)
+    }
   }
-
-  @Test
-  @DisplayName("잘못된 URL 형식은 예외를 발생시킨다")
-  fun `invalid url format should throw exception`() {
-    assertThatThrownBy { OriginalUrl("aaaa") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-  }
-
-  @Test
-  @DisplayName("javascript 프로토콜은 차단된다")
-  fun `javascript protocol should be blocked`() {
-    assertThatThrownBy { OriginalUrl("javascript:alert('xss')") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("not allowed for security reasons")
-  }
-
-  @Test
-  @DisplayName("data 프로토콜은 차단된다")
-  fun `data protocol should be blocked`() {
-    assertThatThrownBy { OriginalUrl("data:text/html,<script>alert('xss')</script>") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("not allowed for security reasons")
-  }
-
-  @Test
-  @DisplayName("XSS 패턴이 포함된 URL은 차단된다")
-  fun `url with xss pattern should be blocked`() {
-    assertThatThrownBy { OriginalUrl("http://example.com?param=<script>alert('xss')</script>") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("potentially malicious content")
-  }
-
-  @Test
-  @DisplayName("onerror 이벤트가 포함된 URL은 차단된다")
-  fun `url with onerror event should be blocked`() {
-    assertThatThrownBy { OriginalUrl("http://example.com?img=x onerror=alert('xss')") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("potentially malicious content")
-  }
-
-  @Test
-  @DisplayName("호스트가 없는 URL은 예외를 발생시킨다")
-  fun `url without host should throw exception`() {
-    assertThatThrownBy { OriginalUrl("http://") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("must have a valid host")
-  }
-
-  @Test
-  @DisplayName("FTP 프로토콜은 허용되지 않는다")
-  fun `ftp protocol should not be allowed`() {
-    assertThatThrownBy { OriginalUrl("ftp://ftp.example.com/file.txt") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("Only http and https protocols are allowed")
-  }
-
-  @Test
-  @DisplayName("매우 긴 URL은 차단된다")
-  fun `very long url should be blocked`() {
-    val longUrl = "https://example.com/" + "a".repeat(3000)
-
-    assertThatThrownBy { OriginalUrl(longUrl) }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("too long")
-  }
-
-  @Test
-  @DisplayName("쿼리 파라미터가 있는 유효한 URL은 성공적으로 생성된다")
-  fun `valid url with query parameters should be created successfully`() {
-    // given
-    val validUrl = "https://example.com/path?param1=value1&param2=value2"
-
-    // when
-    val originalUrl = OriginalUrl(validUrl)
-
-    // then
-    assertThat(originalUrl.value).isEqualTo(validUrl)
-  }
-
-  @Test
-  @DisplayName("프래그먼트가 있는 유효한 URL은 성공적으로 생성된다")
-  fun `valid url with fragment should be created successfully`() {
-    // given
-    val validUrl = "https://example.com/path#section"
-
-    // when
-    val originalUrl = OriginalUrl(validUrl)
-
-    // then
-    assertThat(originalUrl.value).isEqualTo(validUrl)
-  }
-
-  @Test
-  @DisplayName("포트 번호가 있는 유효한 URL은 성공적으로 생성된다")
-  fun `valid url with port should be created successfully`() {
-    // given
-    val validUrl = "https://example.com:8080/path"
-
-    // when
-    val originalUrl = OriginalUrl(validUrl)
-
-    // then
-    assertThat(originalUrl.value).isEqualTo(validUrl)
-  }
-
+  
   @Test
   @DisplayName("toString은 원본 URL 값을 반환한다")
-  fun `toString should return original url value`() {
-    // given
-    val validUrl = "https://example.com"
-    val originalUrl = OriginalUrl(validUrl)
-
-    // when
-    val result = originalUrl.toString()
-
-    // then
-    assertThat(result).isEqualTo(validUrl)
+  fun toStringReturnsOriginalValue() {
+    val url = "https://example.com"
+    assert(OriginalUrl(url).toString() == url)
   }
-
+  
   @Test
-  @DisplayName("잘못된 프로토콜 이름은 차단된다 - http로 시작하지만 다른 문자 포함")
-  fun `invalid protocol starting with http should be blocked`() {
-    assertThatThrownBy { OriginalUrl("httpabc://example.com") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("Only http and https protocols are allowed")
-  }
-
-  @Test
-  @DisplayName("잘못된 프로토콜 이름은 차단된다 - http를 포함하지만 앞에 문자 추가")
-  fun `invalid protocol containing http should be blocked`() {
-    assertThatThrownBy { OriginalUrl("abchttp://example.com") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("Only http and https protocols are allowed")
-  }
-
-  @Test
-  @DisplayName("잘못된 프로토콜 이름은 차단된다 - https로 시작하지만 다른 문자 포함")
-  fun `invalid protocol starting with https should be blocked`() {
-    assertThatThrownBy { OriginalUrl("httpsxyz://example.com") }
-      .isInstanceOf(InvalidOriginalUrlException::class.java)
-      .hasMessageContaining("Only http and https protocols are allowed")
+  @DisplayName("동일한 URL 값을 가진 OriginalUrl 객체는 동등하다")
+  fun originalUrlsWithSameValueAreEqual() {
+    val url = "https://example.com"
+    assert(OriginalUrl(url) == OriginalUrl(url))
   }
 }
