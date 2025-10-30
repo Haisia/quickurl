@@ -11,4 +11,5 @@ data class UrlWithClickCountDto(
   val createdBy: String,
   val lastUsedAt: LocalDateTime,
   val createdAt: LocalDateTime,
+  val expiresAt: LocalDateTime? = null
 )

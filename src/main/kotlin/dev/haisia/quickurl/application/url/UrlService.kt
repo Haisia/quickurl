@@ -11,6 +11,7 @@ import dev.haisia.quickurl.application.url.out.UrlCacheRepository
 import dev.haisia.quickurl.application.url.out.UrlRepository
 import dev.haisia.quickurl.application.user.UserNotFoundException
 import dev.haisia.quickurl.application.user.out.UserRepository
+import dev.haisia.quickurl.domain.Duration
 import dev.haisia.quickurl.domain.url.OriginalUrl
 import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.url.UrlEncoder
@@ -36,18 +37,33 @@ class UrlService(
     private val log = LoggerFactory.getLogger(UrlService::class.java)
   }
 
-  override fun createShortKey(originalUrl: OriginalUrl): String {
-    val shortKey = createOrGetShortKey(originalUrl)
+  override fun createShortKey(originalUrl: OriginalUrl, expirationDuration: Duration): String {
+    val shortKey = createOrGetShortKey(originalUrl, expirationDuration)
     urlCacheRepository.set(shortKey, originalUrl)
     return shortKey
   }
 
-  private fun createOrGetShortKey(originalUrl: OriginalUrl): String {
+  private fun createOrGetShortKey(originalUrl: OriginalUrl, expirationDuration: Duration): String {
     val userIdOrNull = authenticationContext.getCurrentUserIdAllowNull()
 
     val url = urlRepository.findByOriginalUrlAndCreatedBy(originalUrl, userIdOrNull?.toString() ?: "anonymous")
       ?: run {
-        val saved = urlRepository.save(Url.of(originalUrl = originalUrl, createdBy = userIdOrNull))
+        val url = when {
+          userIdOrNull == null -> {
+            Url.of(
+              originalUrl = originalUrl,
+              createdBy = userIdOrNull
+            )
+          }
+          else -> {
+            Url.of(
+              originalUrl = originalUrl,
+              expirationDuration = expirationDuration,
+              createdBy = userIdOrNull
+            )
+          }
+        }
+        val saved = urlRepository.save(url)
         eventPublisher.publishEvent(UrlEvent.UrlCreated(saved.getIdOrThrow()))
         saved
       }
@@ -70,9 +86,18 @@ class UrlService(
     val threshold = LocalDateTime.now().minusMonths(thresholdMonths)
     log.info("Deleting URLs not used since: {}", threshold)
     
-    val deletedCount = urlRepository.deleteByLastUsedAtBefore(threshold)
+    val deletedCount = urlRepository.deleteByLastUsedAtBeforeAndExpiresAtIsNull(threshold)
     
     log.info("Deleted {} unused URLs (threshold: {} months)", deletedCount, thresholdMonths)
+    return deletedCount
+  }
+
+  override fun deleteExpiredUrls(): Int {
+    log.info("Deleting expired URLs")
+    val threshold = LocalDateTime.now().toLocalDate().atStartOfDay()
+    val deletedCount = urlRepository.deleteByExpiresAtBefore(threshold)
+
+    log.info("Deleted {} unused URLs (threshold: {} day)", deletedCount, threshold)
     return deletedCount
   }
 

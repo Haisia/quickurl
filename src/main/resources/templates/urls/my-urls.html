@@ -161,20 +161,48 @@
       function createUrlCard(url) {
         const shortUrl = `${window.location.origin}/${url.short_key}`;
         const createdDate = new Date(url.created_at).toLocaleString('ko-KR');
+        const lastUsedDate = new Date(url.last_used_at).toLocaleString('ko-KR');
+        
+        // expiresAt 정보 생성
+        let expirationInfo = '';
+        if (url.expires_at) {
+          const expiresDate = new Date(url.expires_at).toLocaleString('ko-KR');
+          expirationInfo = `
+            <div class="flex items-center gap-2 text-sm">
+              <span class="text-amber-600">⏰</span>
+              <span class="text-gray-600">만료일:</span>
+              <span class="font-semibold text-amber-700">${expiresDate}</span>
+            </div>
+          `;
+        } else {
+          expirationInfo = `
+            <div class="flex items-center gap-2 text-sm">
+              <span class="text-blue-600">⏰</span>
+              <span class="text-gray-600">만료 정책:</span>
+              <span class="font-semibold text-blue-700">마지막 사용일로부터 90일 후</span>
+            </div>
+          `;
+        }
 
         return `
           <div class="bg-white border-2 border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-slate-400 transition-all duration-300">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-4">
               <div class="flex-1 min-w-0">
-                <div class="text-xl font-bold text-slate-800 break-all mb-1">${shortUrl}</div>
-                <div class="flex items-center gap-3 text-sm text-gray-500">
-                  <span>📅 ${createdDate}</span>
-                  <span class="text-slate-600">•</span>
-                  <span class="flex items-center gap-1">
-                    <span class="text-blue-600">👆</span>
-                    <span class="font-semibold text-blue-700">${url.click_count.toLocaleString()}</span>
-                    <span>클릭</span>
-                  </span>
+                <div class="text-xl font-bold text-slate-800 break-all mb-2">${shortUrl}</div>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <span>📅 생성: ${createdDate}</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-gray-500">
+                    <span>🕐 마지막 사용: ${lastUsedDate}</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="flex items-center gap-1">
+                      <span class="text-blue-600">👆</span>
+                      <span class="font-semibold text-blue-700">${url.click_count.toLocaleString()}</span>
+                      <span>클릭</span>
+                    </span>
+                  </div>
+                  ${expirationInfo}
                 </div>
               </div>
             </div>

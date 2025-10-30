@@ -27,7 +27,7 @@ class UrlController(
   fun createUrl(
     @RequestBody request: CreateUrlRequest
   ): ResponseEntity<ApiResponse<CreateUrlResponse>> {
-    val shortKey = urlCreator.createShortKey(request.originalUrl)
+    val shortKey = urlCreator.createShortKey(request.originalUrl, request.expirationDuration)
     return ApiResponse.created(CreateUrlResponse(shortKey))
   }
 
