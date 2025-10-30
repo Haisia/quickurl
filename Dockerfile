@@ -13,8 +13,8 @@ RUN gradle dependencies --no-daemon || return 0
 # 소스 코드 복사
 COPY src ./src
 
-# 빌드
-RUN gradle clean bootJar --no-daemon
+# 빌드 (clean 제거로 캐시 활용)
+RUN gradle bootJar --no-daemon
 
 # 실행 스테이지
 FROM eclipse-temurin:21-jre-alpine
