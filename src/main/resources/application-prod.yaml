@@ -51,8 +51,9 @@ jwt:
   refresh-token:
     validity-second: 86400
 
-# Cookie 설정
+
 app:
+  base-url: ${APP_BASE_URL:https://quickurl.haisia.dev}
   cookie:
     secure: true
     domain: quickurl.haisia.dev

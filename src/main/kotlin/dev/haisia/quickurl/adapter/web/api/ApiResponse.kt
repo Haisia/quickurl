@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.web.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
@@ -15,8 +16,14 @@ class ApiResponse<T>(
 
     // === Success Responses ===
 
-    fun <T> ok(data: T): ResponseEntity<ApiResponse<T>> {
-      return ResponseEntity.ok(of(data))
+    fun <T> ok(data: T, headers: HttpHeaders? = null): ResponseEntity<ApiResponse<T>> {
+      val builder = ResponseEntity.status(HttpStatus.OK)
+
+      if (headers != null) {
+        builder.headers(headers)
+      }
+
+      return builder.body(of(data))
     }
 
     fun <T> created(data: T): ResponseEntity<ApiResponse<T>> {
