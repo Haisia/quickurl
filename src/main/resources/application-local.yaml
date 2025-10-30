@@ -34,6 +34,21 @@ logging:
     dev.haisia.quickurl: DEBUG
     org.springframework.scheduling: INFO
 
+# Swagger 설정
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
 # Rate Limit 설정
 rate-limit:
   enabled: true

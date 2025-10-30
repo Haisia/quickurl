@@ -35,6 +35,7 @@ dependencies {
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("com.google.zxing:core:3.5.3")
   implementation("com.google.zxing:javase:3.5.3")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 
   runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
   runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")

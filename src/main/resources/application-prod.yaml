@@ -34,6 +34,13 @@ logging:
     dev.haisia.quickurl: INFO
     org.springframework.scheduling: INFO
 
+# Swagger 설정 (프로덕션에서는 비활성화)
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 # Rate Limit 설정
 rate-limit:
   enabled: true

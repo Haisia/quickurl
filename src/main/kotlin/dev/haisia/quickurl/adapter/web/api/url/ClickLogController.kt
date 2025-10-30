@@ -1,6 +1,7 @@
 package dev.haisia.quickurl.adapter.web.api.url
 
 import dev.haisia.quickurl.adapter.web.api.ApiResponse
+import dev.haisia.quickurl.adapter.web.api.url.docs.ClickLogApiDocs
 import dev.haisia.quickurl.adapter.web.api.url.dto.ClickStatsResponse
 import dev.haisia.quickurl.adapter.web.api.url.dto.GetUrlClickStatsResponse
 import dev.haisia.quickurl.application.url.UrlClickLogService
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ClickLogController(
   private val urlClickLogService: UrlClickLogService
-) {
+) : ClickLogApiDocs {
 
   @GetMapping("/stats/{shortKey}")
-  fun getClickStats(@PathVariable shortKey: String): ResponseEntity<ApiResponse<ClickStatsResponse>> {
+  override fun getClickStats(@PathVariable shortKey: String): ResponseEntity<ApiResponse<ClickStatsResponse>> {
     val clickCount = urlClickLogService.getClickCount(shortKey)
 
     return ApiResponse.ok(
@@ -29,7 +30,7 @@ class ClickLogController(
   }
 
   @GetMapping("/stats/global")
-  fun getGlobalStats(): ResponseEntity<ApiResponse<GetUrlClickStatsResponse>> {
+  override fun getGlobalStats(): ResponseEntity<ApiResponse<GetUrlClickStatsResponse>> {
     val (daily, cumulative) = urlClickLogService.getGlobalClickStats()
     return ApiResponse.ok(
       GetUrlClickStatsResponse(

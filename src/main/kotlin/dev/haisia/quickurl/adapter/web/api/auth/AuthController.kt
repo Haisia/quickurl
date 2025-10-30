@@ -4,6 +4,7 @@ import dev.haisia.quickurl.adapter.security.CustomUserDetails
 import dev.haisia.quickurl.adapter.web.api.ApiEmptyData
 import dev.haisia.quickurl.adapter.web.api.ApiResponse
 import dev.haisia.quickurl.adapter.web.api.CookieUtils
+import dev.haisia.quickurl.adapter.web.api.auth.docs.AuthApiDocs
 import dev.haisia.quickurl.adapter.web.api.auth.dto.UserInfoResponse
 import dev.haisia.quickurl.adapter.web.api.auth.dto.UserLoginRequest
 import dev.haisia.quickurl.adapter.web.api.auth.dto.UserRegisterRequest
@@ -19,10 +20,10 @@ import org.springframework.web.bind.annotation.*
 class AuthController(
   private val userAuthorizer: UserAuthorizer,
   private val cookieUtils: CookieUtils
-) {
+) : AuthApiDocs {
 
   @PostMapping("/register")
-  fun register(@RequestBody request: UserRegisterRequest): ResponseEntity<ApiResponse<UserRegisterResponse>> {
+  override fun register(@RequestBody request: UserRegisterRequest): ResponseEntity<ApiResponse<UserRegisterResponse>> {
 
     val user = userAuthorizer.createUser(request.email, request.password)
 
@@ -30,7 +31,7 @@ class AuthController(
   }
 
   @PostMapping("/login")
-  fun login(
+  override fun login(
     @RequestBody request: UserLoginRequest,
     response: HttpServletResponse
   ): ResponseEntity<ApiResponse<ApiEmptyData>> {
@@ -45,7 +46,7 @@ class AuthController(
   }
 
   @GetMapping("/me")
-  fun getCurrentUser(
+  override fun getCurrentUser(
     @AuthenticationPrincipal userDetails: CustomUserDetails?
   ): ResponseEntity<ApiResponse<UserInfoResponse>> {
     return when {
@@ -55,7 +56,7 @@ class AuthController(
   }
 
   @PostMapping("/logout")
-  fun logout(
+  override fun logout(
     @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) refreshToken: String?,
     response: HttpServletResponse
   ): ResponseEntity<ApiResponse<ApiEmptyData>> {
@@ -69,7 +70,7 @@ class AuthController(
   }
 
   @PostMapping("/token/refresh")
-  fun refreshToken(
+  override fun refreshToken(
     @CookieValue(name = CookieUtils.REFRESH_TOKEN_COOKIE_NAME, required = true) refreshToken: String,
     response: HttpServletResponse
   ): ResponseEntity<ApiResponse<ApiEmptyData>> {

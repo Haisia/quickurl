@@ -4,6 +4,7 @@ import dev.haisia.quickurl.adapter.config.AppProperties
 import dev.haisia.quickurl.adapter.web.api.ApiEmptyData
 import dev.haisia.quickurl.adapter.web.api.ApiPageableData
 import dev.haisia.quickurl.adapter.web.api.ApiResponse
+import dev.haisia.quickurl.adapter.web.api.url.docs.UrlApiDocs
 import dev.haisia.quickurl.adapter.web.api.url.dto.CreateUrlRequest
 import dev.haisia.quickurl.adapter.web.api.url.dto.CreateUrlResponse
 import dev.haisia.quickurl.adapter.web.api.url.dto.GetMyUrlsResponse
@@ -26,10 +27,10 @@ class UrlController(
   private val urlCleaner: UrlCleaner,
   private val qrCodeHandler: QrCodeHandler,
   private val appProperties: AppProperties,
-) {
+) : UrlApiDocs {
 
   @PostMapping("/url/shorten")
-  fun createUrl(
+  override fun createUrl(
     @RequestBody request: CreateUrlRequest
   ): ResponseEntity<ApiResponse<CreateUrlResponse>> {
     val shortKey = urlCreator.createShortKey(request.originalUrl, request.expirationDuration)
@@ -37,13 +38,13 @@ class UrlController(
   }
 
   @DeleteMapping("/url/shorten/{shortKey}")
-  fun deleteUrl(@PathVariable shortKey: String): ResponseEntity<ApiResponse<ApiEmptyData>> {
+  override fun deleteUrl(@PathVariable shortKey: String): ResponseEntity<ApiResponse<ApiEmptyData>> {
     urlCleaner.deleteMyUrl(shortKey)
     return ApiResponse.ok(ApiEmptyData())
   }
 
   @GetMapping("/urls/me")
-  fun getMyUrls(
+  override fun getMyUrls(
     @PageableDefault(size = 20, sort = ["createdAt"], direction = DESC) pageable: Pageable
   ): ResponseEntity<ApiResponse<ApiPageableData<GetMyUrlsResponse>>> {
     val page = urlFinder.findMyUrls(pageable).map { GetMyUrlsResponse.from(it) }
@@ -51,7 +52,7 @@ class UrlController(
   }
 
   @GetMapping("/url/qr-code")
-  fun getUrlQrCode(
+  override fun getUrlQrCode(
     @RequestParam shortKey: String,
     @RequestParam(defaultValue = "200") size: Int
   ): ResponseEntity<ApiResponse<GetUrlQrCodeResponse>> {
