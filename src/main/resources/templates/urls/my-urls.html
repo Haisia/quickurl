@@ -185,13 +185,29 @@
 
       function createUrlCard(url) {
         const shortUrl = `${window.location.origin}/${url.short_key}`;
-        const createdDate = new Date(url.created_at).toLocaleString('ko-KR');
-        const lastUsedDate = new Date(url.last_used_at).toLocaleString('ko-KR');
+        
+        // 날짜 포맷 변경: YYYY. MM. DD. HH:mm
+        const formatDate = (dateString) => {
+          const date = new Date(dateString);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          return `${year}. ${month}. ${day}. ${hours}:${minutes}`;
+        };
+        
+        const createdDate = formatDate(url.created_at);
+        const lastUsedDate = formatDate(url.last_used_at);
         
         // expiresAt 정보 생성
         let expirationInfo = '';
         if (url.expires_at) {
-          const expiresDate = new Date(url.expires_at).toLocaleString('ko-KR');
+          const date = new Date(url.expires_at);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const expiresDate = `${year}. ${month}. ${day}.`;
           expirationInfo = `
             <div class="flex items-center gap-2 text-sm">
               <span class="text-amber-600">⏰</span>
@@ -219,7 +235,7 @@
                     <span>📅 생성: ${createdDate}</span>
                   </div>
                   <div class="flex items-center gap-3 text-sm text-gray-500">
-                    <span>🕐 마지막 사용: ${lastUsedDate}</span>
+                    <span>🕐 최근: ${lastUsedDate}</span>
                     <span class="text-slate-600">•</span>
                     <span class="flex items-center gap-1">
                       <span class="text-blue-600">👆</span>

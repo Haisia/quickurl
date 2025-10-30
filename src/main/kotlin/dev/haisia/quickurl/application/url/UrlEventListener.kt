@@ -9,6 +9,8 @@ import dev.haisia.quickurl.domain.url.UrlClickLog
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 import java.util.*
@@ -51,6 +53,7 @@ class UrlEventListener(
   }
 
   @Async
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   fun handleUrlClicked(event: UrlEvent.UrlClicked) {
     val dto = event.urlClickDto
@@ -61,6 +64,7 @@ class UrlEventListener(
     * 이벤트에서 처리
     * */
     url.click()
+    urlRepository.save(url)
 
     urlClickLogRepository.save(
       UrlClickLog.of(
