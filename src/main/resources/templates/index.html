@@ -164,7 +164,7 @@
     </style>
 
     <script>
-      let isLoggedIn = false;
+      let is_logged_in = false;
 
       // 페이지 로드 시 로그인 상태 확인 및 localStorage 정리
       window.addEventListener('DOMContentLoaded', function() {
@@ -204,9 +204,9 @@
 
           if (response.ok) {
             const data = await response.json();
-            if (data.data && data.data.isLoggedIn) {
+            if (data.data && data.data.is_logged_in) {
               // 로그인 상태
-              isLoggedIn = true;
+              is_logged_in = true;
               document.getElementById('userInfo').classList.remove('hidden');
               document.getElementById('userInfo').classList.add('flex');
               document.getElementById('authLinks').classList.add('hidden');
@@ -229,7 +229,7 @@
       }
 
       function showAuthLinks() {
-        isLoggedIn = false;
+        is_logged_in = false;
         document.getElementById('userInfo').classList.add('hidden');
         document.getElementById('authLinks').classList.remove('hidden');
         document.getElementById('durationSection').classList.add('hidden');
@@ -273,7 +273,7 @@
             originalUrl: originalUrl
           };
 
-          if (isLoggedIn) {
+          if (is_logged_in) {
             const expirationDuration = document.getElementById('expirationDuration').value;
             requestBody.expirationDuration = expirationDuration;
           }
