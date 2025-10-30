@@ -74,6 +74,9 @@ app:
       allow-subdomains: false
       protected-paths:
         - /api/v1
+  email:
+    send:
+      enabled: ${EMAIL_SEND_ENABLED:true}
 
 brevo:
   api-key: ${SMTP_BREVO_API_KEY}

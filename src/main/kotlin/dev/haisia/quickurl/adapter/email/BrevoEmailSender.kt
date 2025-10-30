@@ -1,5 +1,6 @@
 package dev.haisia.quickurl.adapter.email
 
+import dev.haisia.quickurl.adapter.config.EmailProperties
 import dev.haisia.quickurl.application.shared.out.EmailSender
 import dev.haisia.quickurl.domain.url.OriginalUrl
 import org.slf4j.LoggerFactory
@@ -12,7 +13,8 @@ import java.time.LocalDateTime
 @Component
 class BrevoEmailSender(
   private val brevoWebClient: WebClient,
-  private val emailTemplateHandler: EmailTemplateHandler
+  private val emailTemplateHandler: EmailTemplateHandler,
+  private val emailProperties: EmailProperties
 ) : EmailSender {
 
   companion object {
@@ -78,6 +80,11 @@ class BrevoEmailSender(
 
 
   private fun sendEmail(emailRequest: BrevoEmailRequest): Mono<String> {
+    if (!emailProperties.send.enabled) {
+      log.info("Email sending is disabled. Skipping email to: ${emailRequest.to.firstOrNull()?.email}")
+      return Mono.just("Email sending disabled")
+    }
+    
     return brevoWebClient.post()
       .uri("/v3/smtp/email")
       .bodyValue(emailRequest)
