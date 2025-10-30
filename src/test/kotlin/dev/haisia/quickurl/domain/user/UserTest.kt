@@ -7,7 +7,7 @@ import dev.haisia.quickurl.fixture.UserFixture
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 
 @DisplayName("User 테스트")
 class UserTest {

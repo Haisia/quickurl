@@ -6,7 +6,7 @@ import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.url.UrlClickLog
 import dev.haisia.quickurl.fixture.TestReflectionUtils.setFieldValue
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 class UrlFixture {
   companion object {

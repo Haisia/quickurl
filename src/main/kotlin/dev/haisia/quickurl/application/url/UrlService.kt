@@ -107,8 +107,8 @@ class UrlService(
 
     val deletedCount = urlRepository.deleteByShortKeyAndCreatedBy(shortKey, userIdString)
 
-    check(deletedCount >= 1) {
-      ShortUrlNotFoundException("URL not found for key: $shortKey")
+    if (deletedCount < 1) {
+      throw ShortUrlNotFoundException("URL not found for key: $shortKey")
     }
 
     log.info("Deleted URL for key: {}", shortKey)

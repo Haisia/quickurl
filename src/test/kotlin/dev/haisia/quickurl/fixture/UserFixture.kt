@@ -3,11 +3,9 @@ package dev.haisia.quickurl.fixture
 import dev.haisia.quickurl.domain.Email
 import dev.haisia.quickurl.domain.Password
 import dev.haisia.quickurl.domain.PasswordEncoder
-import dev.haisia.quickurl.domain.url.Url
 import dev.haisia.quickurl.domain.user.User
 import dev.haisia.quickurl.fixture.TestReflectionUtils.setFieldValue
-import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 class UserFixture {
   
