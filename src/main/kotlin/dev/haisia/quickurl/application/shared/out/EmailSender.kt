@@ -17,7 +17,7 @@ interface EmailSender {
   fun sendUrlCreated(
     recipientEmail: String,
     recipientName: String,
-    shortUrl: String,
+    shortKey: String,
     originalUrl: OriginalUrl,
     customAlias: String? = null,
     expiresAt: LocalDateTime = LocalDateTime.now().plusDays(90)

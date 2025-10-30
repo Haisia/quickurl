@@ -55,14 +55,14 @@ class BrevoEmailSender(
   override fun sendUrlCreated(
     recipientEmail: String,
     recipientName: String,
-    shortUrl: String,
+    shortKey: String,
     originalUrl: OriginalUrl,
     customAlias: String?,
     expiresAt: LocalDateTime
   ): Mono<String> {
     val content = emailTemplateHandler.renderUrlCreatedEmail(
       userName = recipientName,
-      shortUrl = shortUrl,
+      shortKey = shortKey,
       originalUrl = originalUrl.value,
       customAlias = customAlias,
       expiresAt = LocalDateTime.now().plusDays(90)

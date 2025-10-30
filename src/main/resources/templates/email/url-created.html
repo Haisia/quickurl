@@ -31,9 +31,9 @@
         <p style="color: #ffffff; margin: 0 0 12px 0; font-size: 14px; font-weight: 500; opacity: 0.9;">
           단축 URL
         </p>
-        <a th:href="${shortUrl}" 
+        <a th:href="${baseUrl} + '/' + ${shortKey}"
            style="color: #ffffff; font-size: 20px; font-weight: 700; text-decoration: none; word-break: break-all; display: block; background-color: rgba(255,255,255,0.2); padding: 16px; border-radius: 6px;"
-           th:text="${shortUrl}">
+           th:text="${baseUrl} + '/' + ${shortKey}">
           https://quickurl.haisia.dev/abc123
         </a>
         <p style="color: #ffffff; margin: 16px 0 0 0; font-size: 13px; opacity: 0.85;">

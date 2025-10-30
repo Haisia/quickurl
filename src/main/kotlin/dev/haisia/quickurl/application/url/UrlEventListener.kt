@@ -40,7 +40,7 @@ class UrlEventListener(
       mailSender.sendUrlCreated(
         recipientEmail = user.email.value,
         recipientName = user.email.value,
-        shortUrl = url.getShortKeyOrThrow(),
+        shortKey = url.getShortKeyOrThrow(),
         originalUrl = url.originalUrl,
       ).subscribe()
     }
