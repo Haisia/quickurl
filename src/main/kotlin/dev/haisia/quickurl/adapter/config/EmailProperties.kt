@@ -9,6 +9,6 @@ class EmailProperties(
   val send: SendConfig = SendConfig()
 ) {
   data class SendConfig(
-    val enabled: Boolean = false,
+    var enabled: Boolean = false,
   )
 }
