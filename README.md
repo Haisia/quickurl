@@ -1,7 +1,7 @@
 # QuickURL
 
 > **🌐 배포 주소**: [https://quickurl.haisia.dev/](https://quickurl.haisia.dev/)
-
+>
 > **👨‍💻 Project by 최준혁** - 기획, 설계, 개발, 배포 100% 개인 프로젝트  
 > GitHub: [@Haisia](https://github.com/Haisia) | Blog: [Velog](https://velog.io/@haisia)
 
@@ -65,7 +65,6 @@ QuickURL은 Kotlin과 Spring Boot 기반의 고성능 URL 단축 서비스입니
 - **Spring Data JPA**: 데이터베이스 ORM 및 영속성 관리
 - **Spring Security**: 인증/인가 및 보안
 - **Spring Data Redis**: 캐싱 및 세션 관리
-- **Spring WebFlux**: 비동기 논블로킹 처리 (Reactor)
 - **Thymeleaf**: 서버 사이드 템플릿 엔진
 
 ### Database
@@ -123,7 +122,7 @@ src/main/kotlin/dev/haisia/quickurl/
 │   ├── Password.kt     # 비밀번호 VO
 │   └── Duration.kt     # 만료 기간 VO
 │
-├── application/         # 유스케이스 및 애플리케이션 서비스
+├── application/        # 유스케이스 및 애플리케이션 서비스
 │   ├── url/            # URL 관련 유스케이스
 │   ├── user/           # 사용자 관련 유스케이스
 │   └── shared/         # 공유 애플리케이션 로직
@@ -369,6 +368,10 @@ Redis 캐싱과 성능 최적화로 서버 부하를 보완했습니다.
 
 향후 **사내 정책이나 서비스 특성에 따라 유연하게 조정 가능**하도록 설계되었습니다.
 
+### 데이터베이스 스키마
+
+![ERD](docs/ERD.jpg)
+
 ---
 
 ## 🚀 시작하기
@@ -475,59 +478,10 @@ QuickURL은 GitHub Actions를 활용한 자동화된 CI/CD 파이프라인을 �
 
 ### 파이프라인 개요
 
-```
-개발 흐름:
-dev 브랜치 → Pull Request → AI 코드 리뷰 → 병합
-                                ↓
-                             master 브랜치 → Docker 빌드 → 배포
-```
+![CI/CD Workflow](docs/CICD%20Workflo.jpg)
 
-### 1. AI 기반 자동 코드 리뷰 (dev 브랜치)
 
-**트리거 조건**
-
-- `dev` 브랜치로의 Pull Request 생성 또는 업데이트
-
-**워크플로우**
-
-```yaml
-# .github/workflows/code-review.yaml
-name: Code Review
-
-on:
-  pull_request:
-    types: [ opened, synchronize ]
-    branches:
-      - dev
-```
-
-**동작 과정**
-
-1. **변경 사항 감지**
-    - Pull Request에서 수정된 파일 목록과 diff 추출
-
-2. **Claude API 호출**
-    - Anthropic Claude API에 변경 내용 전송
-    - 코드 품질, 아키텍처 준수, 잠재적 버그 등을 AI가 분석
-
-3. **리뷰 코멘트 생성**
-    - AI 분석 결과를 Pull Request에 자동으로 코멘트 작성
-    - 개선 제안, 보안 이슈, 코드 스타일 등 포괄적 리뷰 제공
-
-**기술 스택**
-
-- Python 3.x (리뷰 스크립트)
-- PyGithub (GitHub API 연동)
-- Claude API (코드 분석)
-
-**장점**
-
-- 24/7 즉각적인 코드 리뷰
-- 일관된 코드 품질 기준 적용
-- 개발자의 리뷰 부담 경감
-- 아키텍처 원칙 자동 검증
-
-### 2. 자동 배포 파이프라인 (master 브랜치)
+### 1. 자동 배포 파이프라인 (master 브랜치)
 
 **트리거 조건**
 
@@ -565,8 +519,8 @@ on:
 docker build -t quickurl:latest .
 
 # 2. GitHub Container Registry 푸시
-docker tag quickurl:latest ghcr.io/username/quickurl:latest
-docker push ghcr.io/username/quickurl:latest
+docker tag quickurl:latest ghcr.io/haisia/quickurl:latest
+docker push ghcr.io/haisia/quickurl:latest
 ```
 
 - Multi-stage 빌드로 이미지 최적화
@@ -616,6 +570,58 @@ docker compose -f docker-compose.prod.yml ps
     - `DB_PASSWORD`, `JWT_SECRET`, `SMTP_BREVO_API_KEY` 등
 - Private SSH Key를 통한 안전한 접속
 
+### 2. AI 기반 자동 코드 리뷰 (dev 브랜치)
+
+```
+개발 흐름:
+dev 브랜치 → Pull Request → AI 코드 리뷰 → 병합
+                                ↓
+                             master 브랜치 → Docker 빌드 → 배포
+```
+
+**트리거 조건**
+
+- `dev` 브랜치로의 Pull Request 생성 또는 업데이트
+
+**워크플로우**
+
+```yaml
+# .github/workflows/code-review.yaml
+name: Code Review
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+    branches:
+      - dev
+```
+
+**동작 과정**
+
+1. **변경 사항 감지**
+   - Pull Request에서 수정된 파일 목록과 diff 추출
+
+2. **Claude API 호출**
+   - Anthropic Claude API에 변경 내용 전송
+   - 코드 품질, 아키텍처 준수, 잠재적 버그 등을 AI가 분석
+
+3. **리뷰 코멘트 생성**
+   - AI 분석 결과를 Pull Request에 자동으로 코멘트 작성
+   - 개선 제안, 보안 이슈, 코드 스타일 등 포괄적 리뷰 제공
+
+**기술 스택**
+
+- Python 3.x (리뷰 스크립트)
+- PyGithub (GitHub API 연동)
+- Claude API (코드 분석)
+
+**장점**
+
+- 24/7 즉각적인 코드 리뷰
+- 일관된 코드 품질 기준 적용
+- 개발자의 리뷰 부담 경감
+- 아키텍처 원칙 자동 검증
+
 ### CI/CD 모니터링
 
 **배포 상태 확인**
@@ -646,40 +652,39 @@ API 명세는 인터페이스 기반으로 정의되어 있으며, 컨트롤러�
 ### Swagger UI 접속
 
 - **로컬**: http://localhost:8080/swagger-ui.html
-- **프로덕션**: https://quickurl.haisia.dev/swagger-ui.html
 
 ### API 개요
 
 QuickURL의 REST API는 크게 3가지 카테고리로 구성됩니다.
 
-#### 1. 인증 API (`/api/auth`)
+#### 1. 인증 API (`/api/v1/auth`)
 
 사용자 인증 및 계정 관리 관련 API
 
-| 엔드포인트                | 메서드  | 설명           | 인증 필요 |
-|----------------------|------|--------------|-------|
-| `/api/auth/register` | POST | 회원가입         | ❌     |
-| `/api/auth/login`    | POST | 로그인          | ❌     |
-| `/api/auth/logout`   | POST | 로그아웃         | ✅     |
-| `/api/auth/me`       | GET  | 현재 사용자 정보 조회 | ✅     |
-| `/api/auth/refresh`  | POST | 액세스 토큰 갱신    | ✅     |
+| 엔드포인트                        | 메서드  | 설명           | 인증 필요 |
+|------------------------------|------|--------------|-------|
+| `/api/v1/auth/register`      | POST | 회원가입         | ❌     |
+| `/api/v1/auth/login`         | POST | 로그인          | ❌     |
+| `/api/v1/auth/logout`        | POST | 로그아웃         | ✅     |
+| `/api/v1/auth/me`            | GET  | 현재 사용자 정보 조회 | ✅     |
+| `/api/v1/auth/token/refresh` | POST | 액세스 토큰 갱신    | ✅     |
 
 **주요 특징**
 
 - JWT 기반 토큰 인증
-- Access Token (15분), Refresh Token (7일) 사용
+- Access Token (1시간), Refresh Token (7일) 사용
 - HttpOnly 쿠키를 통한 토큰 관리
 
-#### 2. URL 단축 API (`/api/urls`)
+#### 2. URL 단축 API (`/api/v1/url, /api/v1/urls`)
 
 URL 생성, 관리, QR 코드 생성 관련 API
 
-| 엔드포인트                         | 메서드    | 설명               | 인증 필요 |
-|-------------------------------|--------|------------------|-------|
-| `/api/urls`                   | POST   | 단축 URL 생성        | ❌     |
-| `/api/urls/{shortKey}`        | DELETE | 단축 URL 삭제        | ✅     |
-| `/api/urls/my`                | GET    | 내가 생성한 URL 목록 조회 | ✅     |
-| `/api/urls/{shortKey}/qrcode` | GET    | QR 코드 생성         | ❌     |
+| 엔드포인트                           | 메서드    | 설명               | 인증 필요 |
+|---------------------------------|--------|------------------|-------|
+| `/api/v1/url/shorten`           | POST   | 단축 URL 생성        | ❌     |
+| `/api/v1/url/{shortKey}`        | DELETE | 단축 URL 삭제        | ✅     |
+| `/api/v1/urls/me`               | GET    | 내가 생성한 URL 목록 조회 | ✅     |
+| `/api/v1/url/qr-code?shortKey=` | GET    | QR 코드 생성         | ❌     |
 
 **주요 특징**
 
@@ -688,202 +693,20 @@ URL 생성, 관리, QR 코드 생성 관련 API
 - 페이지네이션 지원 (내 URL 목록)
 - QR 코드 크기 커스터마이징 가능
 
-#### 3. 클릭 통계 API (`/api/click-logs`)
+#### 3. 클릭 통계 API (`/api/v1/stats`)
 
 URL 클릭 통계 조회 관련 API
 
-| 엔드포인트                              | 메서드 | 설명             | 인증 필요 |
-|------------------------------------|-----|----------------|-------|
-| `/api/click-logs/{shortKey}/stats` | GET | 단축 URL 클릭 수 조회 | ❌     |
-| `/api/click-logs/global-stats`     | GET | 전체 클릭 통계 조회    | ❌     |
+| 엔드포인트                      | 메서드 | 설명             | 인증 필요 |
+|----------------------------|-----|----------------|-------|
+| `/api/v1/stats/{shortKey}` | GET | 단축 URL 클릭 수 조회 | ❌     |
+| `/api/v1/stats/global`     | GET | 전체 클릭 통계 조회    | ❌     |
 
 **주요 특징**
 
 - 실시간 클릭 수 집계
 - 일일 클릭 수 / 누적 클릭 수 제공
 - Redis 캐싱으로 빠른 응답
-
-### API 응답 형식
-
-모든 API는 일관된 응답 구조를 사용합니다.
-
-**성공 응답**
-
-```json
-{
-  "data": {
-    // 실제 데이터
-  }
-}
-```
-
-**에러 응답**
-
-```json
-{
-  "data": {
-    "message": "에러 메시지"
-  }
-}
-```
-
-**페이징 응답**
-
-```json
-{
-  "data": {
-    "total_pages": 10,
-    "total_count": 95,
-    "items": [
-      // 아이템 목록
-    ]
-  }
-}
-```
-
-### 주요 API 상세
-
-#### POST /api/auth/register
-
-회원가입
-
-**Request Body**
-
-```json
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-**Response (201 Created)**
-
-```json
-{
-  "data": {
-    "user_id": 1,
-    "email": "user@example.com"
-  }
-}
-```
-
-**Error Codes**
-
-- `400`: 잘못된 요청 (이메일 형식 오류, 비밀번호 규칙 위반)
-- `409`: 이미 존재하는 이메일
-
----
-
-#### POST /api/urls
-
-단축 URL 생성
-
-**Request Body**
-
-```json
-{
-  "original_url": "https://example.com/very/long/url",
-  "custom_duration": "SEVEN_DAYS"
-  // 선택사항 (로그인 시에만)
-}
-```
-
-**Response (201 Created)**
-
-```json
-{
-  "data": {
-    "short_key": "abc123",
-    "short_url": "https://quickurl.haisia.dev/abc123",
-    "original_url": "https://example.com/very/long/url",
-    "expires_at": "2025-11-07T10:00:00"
-  }
-}
-```
-
-**Duration Options**
-
-- `ONE_DAY`: 1일
-- `SEVEN_DAYS`: 7일
-- `THIRTY_DAYS`: 30일
-- `NINETY_DAYS`: 90일
-- `DEFAULT`: 기본 정책 (마지막 사용일 기준 90일)
-
----
-
-#### GET /api/urls/my
-
-내가 생성한 URL 목록 조회 (페이지네이션)
-
-**Query Parameters**
-
-- `page`: 페이지 번호 (0부터 시작)
-- `size`: 페이지 크기 (기본값: 20)
-- `sort`: 정렬 기준 (예: `createdAt,desc`)
-
-**Response (200 OK)**
-
-```json
-{
-  "data": {
-    "total_pages": 5,
-    "total_count": 95,
-    "items": [
-      {
-        "short_key": "abc123",
-        "short_url": "https://quickurl.haisia.dev/abc123",
-        "original_url": "https://example.com/...",
-        "click_count": 42,
-        "created_at": "2025-10-01T10:00:00",
-        "last_accessed_at": "2025-10-30T15:30:00",
-        "expires_at": "2025-12-30T10:00:00"
-      }
-    ]
-  }
-}
-```
-
----
-
-#### GET /api/urls/{shortKey}/qrcode
-
-QR 코드 생성
-
-**Path Parameters**
-
-- `shortKey`: 단축 URL 키 (예: abc123)
-
-**Query Parameters**
-
-- `size`: QR 코드 이미지 크기 (픽셀, 기본값: 200)
-
-**Response (200 OK)**
-
-```json
-{
-  "data": {
-    "qr_code_base64": "iVBORw0KGgoAAAANSUhEUgAA...",
-    "short_url": "https://quickurl.haisia.dev/abc123"
-  }
-}
-```
-
----
-
-#### GET /api/click-logs/global-stats
-
-전체 클릭 통계 조회
-
-**Response (200 OK)**
-
-```json
-{
-  "data": {
-    "today_clicks": 1234,
-    "total_clicks": 98765
-  }
-}
-```
 
 ### API 보안
 
