@@ -3,13 +3,12 @@ package dev.haisia.quickurl.adapter.web.page
 import dev.haisia.quickurl.application.url.dto.UrlClickDto
 import dev.haisia.quickurl.application.url.`in`.UrlClicker
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import java.net.URI
+import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.view.RedirectView
 
 @Controller
 class UrlRedirectPageController(
@@ -20,7 +19,7 @@ class UrlRedirectPageController(
   fun clickUrl(
     @PathVariable shortKey: String,
     request: HttpServletRequest
-  ): ResponseEntity<Unit> {
+  ): ModelAndView {
 
     val originalUrl = urlClicker.click(
       UrlClickDto(
@@ -31,11 +30,10 @@ class UrlRedirectPageController(
       )
     )
 
-    return ResponseEntity
-      .status(HttpStatus.FOUND)
-      .location(URI.create(originalUrl.value))
-      .cacheControl(CacheControl.noStore())
-      .build()
+    val redirectView = RedirectView(originalUrl.value)
+    redirectView.setStatusCode(HttpStatus.FOUND)
+    
+    return ModelAndView(redirectView)
   }
 
   private fun getClientIp(request: HttpServletRequest): String {

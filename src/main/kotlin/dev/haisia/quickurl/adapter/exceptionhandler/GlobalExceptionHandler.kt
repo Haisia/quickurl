@@ -18,13 +18,13 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
 /**
- * 전역 예외 처리 핸들러
+ * 전역 예외 처리 핸들러 (API용)
  * 
- * 애플리케이션의 모든 예외를 처리하는 최상위 핸들러입니다.
- * 특정 계층(Domain, Application, Adapter)의 예외는 각각의 핸들러에서 처리하고,
- * 이 핸들러는 일반적인 Spring/Java 예외들을 처리합니다.
+ * API 컨트롤러에서 발생한 예외를 JSON 형태로 반환합니다.
+ * basePackages 설정으로 api 패키지만 처리하며,
+ * page 패키지의 예외는 GlobalPageExceptionHandler가 처리합니다.
  */
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = ["dev.haisia.quickurl.adapter.web.api"])
 class GlobalExceptionHandler {
   companion object {
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
