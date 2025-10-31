@@ -478,7 +478,7 @@ QuickURL은 GitHub Actions를 활용한 자동화된 CI/CD 파이프라인을 �
 
 ### 파이프라인 개요
 
-![CI/CD Workflow](docs/CICD%20Workflo.jpg)
+![CI/CD Workflow](docs/CICD%20Workflow.jpg)
 
 
 ### 1. 자동 배포 파이프라인 (master 브랜치)
@@ -738,12 +738,12 @@ URL 클릭 통계 조회 관련 API
 
 ```bash
 # 회원가입
-curl -X POST http://localhost:8080/api/auth/register \
+curl -X POST http://localhost:8080/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 
 # URL 생성
-curl -X POST http://localhost:8080/api/urls \
+curl -X POST http://localhost:8080/api/v1/url/shorten \
   -H "Content-Type: application/json" \
   -d '{"original_url":"https://example.com/long/url"}'
 ```
